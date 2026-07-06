@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="Core/RealStateApp.Application/RealStateApp.Application.csproj" />
+    <Project Path="Core/RealStateApp.Domain/RealStateApp.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure/RealStateApp.Infrastructure.Persistence/RealStateApp.Infrastructure.Persistence.csproj" />
+    <Project Path="Infrastructure/RealStateApp.Infrastructure.Shared/RealStateApp.Infrastructure.Shared.csproj" />
+  </Folder>
+  <Folder Name="/Presentation/">
+    <Project Path="Presentation/RealStateApp.Presentation.WebApi/RealStateApp.Presentation.WebApi.csproj" />
+    <Project Path="Presentation/RealStateApp.Presentation.WebApp/RealStateApp.Presentation.WebApp.csproj" />
+  </Folder>
+</Solution>
