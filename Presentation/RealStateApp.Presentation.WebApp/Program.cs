@@ -1,10 +1,23 @@
+using Microsoft.AspNetCore.Identity;
+using RealStateApp.Domain.Entities;
 using RealStateApp.Infrastructure.Persistence;
+using RealStateApp.Infrastructure.Persistence.Contexts;
+using RealStateApp.Infrastructure.Shared;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
+builder.Services.AddSharedInfrastructure(builder.Configuration);
+
+builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false; // O true si quieres activación por correo
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>() // Ajusta esto según el nombre de tu contexto
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
