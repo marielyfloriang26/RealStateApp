@@ -1,10 +1,9 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Application.Interfaces.Services;
+using RealStateApp.Application.ViewModels.User;
 using RealStateApp.Domain.Entities;
-using RealStateApp.Presentation.WebApp.Models;
 
 namespace RealStateApp.Presentation.WebApp.Controllers;
 
@@ -12,23 +11,32 @@ namespace RealStateApp.Presentation.WebApp.Controllers;
 public class AccountController : Controller
 {
     private readonly UserManager<Usuario> _userManager;
-    private readonly IUploadService _uploadService; // Tu servicio de subida de archivos
+    private readonly IUploadService _uploadService;
+    private readonly IEmailService _emailService;
 
-
-
+    public AccountController(UserManager<Usuario> userManager, IUploadService uploadService, IEmailService emailService)
+    {
+        _userManager = userManager;
+        _uploadService = uploadService;
+        _emailService = emailService;
+    }
 
     [HttpGet]
-    public IActionResult Register()
-    {
-        return View(); // Esto renderiza la vista Register.cshtml
-    }
+    public IActionResult Register() => View(new RegisterViewModel());
 
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel vm)
     {
         if (!ModelState.IsValid) return View(vm);
 
-        // Validar unicidad (Requerimiento)
+        // 1. Validar Tipo de Usuario (Seguridad)
+        if (vm.TipoUsuario != "Cliente" && vm.TipoUsuario != "Agente")
+        {
+            ModelState.AddModelError("", "Tipo de usuario no válido.");
+            return View(vm);
+        }
+
+        // 2. Validar Unicidad (Reglas de negocio)
         if (await _userManager.FindByNameAsync(vm.UserName) != null)
         {
             ModelState.AddModelError("", "Ya existe un usuario registrado con este nombre de usuario.");
@@ -41,52 +49,105 @@ public class AccountController : Controller
             return View(vm);
         }
 
-        // Crear usuario
-        var user = new Usuario {
+        // 3. Crear usuario
+        var user = new Usuario
+        {
             UserName = vm.UserName,
             Email = vm.Email,
             Nombre = vm.Nombre,
             Apellido = vm.Apellido,
             TipoUsuario = vm.TipoUsuario,
-            EsActivo = false // Siempre Inactivo
+            EsActivo = false // Requerimiento: Siempre inactivo
         };
 
         var result = await _userManager.CreateAsync(user, vm.Password);
 
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            try
+            foreach (var error in result.Errors)
             {
-                string fotoPath = _uploadService.UploadFile(vm.Foto, user.Id);
-                user.FotoUrl = fotoPath;
-                await _userManager.UpdateAsync(user); // Guardar la ruta en la DB
+                ModelState.AddModelError("", error.Description);
             }
-            catch (Exception ex)
-            {
-                // Si falla la foto, eliminamos el usuario creado para mantener consistencia
-                await _userManager.DeleteAsync(user);
-                ModelState.AddModelError("", ex.Message);
-                return View(vm);
-            }
-
-            // 4. Asignar rol
-            await _userManager.AddToRoleAsync(user, vm.TipoUsuario);
-
-            // 5. Flujo según tipo de usuario
-            if (vm.TipoUsuario == "Cliente")
-            {
-                // TODO: Aquí invocarás tu servicio de Email para enviar el enlace de activación
-                TempData["Message"] = "Su cuenta ha sido creada correctamente. Revise su correo electrónico para activar su usuario.";
-            }
-            else // Agente
-            {
-                TempData["Message"] = "Su cuenta de agente ha sido creada correctamente. Un administrador debe activar su usuario antes de que pueda iniciar sesión.";
-            }
-
-            return RedirectToAction("Login", "Account");
+            return View(vm);
         }
 
-        ModelState.AddModelError("", "No fue posible completar el registro. Intente nuevamente más tarde.");
-        return View(vm);
+        // 4. Subida de Foto
+        try
+        {
+            user.FotoUrl = _uploadService.UploadFile(vm.Foto, user.Id);
+            await _userManager.UpdateAsync(user);
+        }
+        catch (Exception ex)
+        {
+            await _userManager.DeleteAsync(user); // Rollback
+            ModelState.AddModelError("", ex.Message);
+            return View(vm);
+        }
+
+        // 5. Asignar Rol
+        await _userManager.AddToRoleAsync(user, vm.TipoUsuario);
+
+        if (vm.TipoUsuario == "Cliente")
+        {
+            // Generamos un token para la activación
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var callbackUrl = Url.Action("ConfirmarEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+            string mensaje = $@"
+                <h2>Hola {user.Nombre},</h2>
+                <p>Su cuenta ha sido registrada correctamente en RealEstateApp.</p>
+                <p>Para activar su usuario, utilice el siguiente enlace:</p>
+                <a href='{callbackUrl}'>Activar Cuenta</a>";
+
+            await _emailService.SendEmailAsync(user.Email, "Activación de cuenta en RealEstateApp", mensaje);
+            
+            TempData["Message"] = "Su cuenta ha sido creada correctamente. Revise su correo electrónico para activar su usuario.";
+        }
+        else
+        {
+            TempData["Message"] = "Su cuenta de agente ha sido creada correctamente. Un administrador debe activar su usuario antes de que pueda iniciar sesión.";
+        }
+
+        return RedirectToAction("Login", "Account");
+
+        /*// 6. Flujo de mensajes
+        if (vm.TipoUsuario == "Cliente")
+        {
+            // TODO: Implementar envío de correo aquí
+            TempData["Message"] = "Su cuenta ha sido creada correctamente. Revise su correo electrónico para activar su usuario.";
+        }
+        else
+        {
+            TempData["Message"] = "Su cuenta de agente ha sido creada correctamente. Un administrador debe activar su usuario antes de que pueda iniciar sesión.";
+        }
+
+        return RedirectToAction("Login", "Account");*/
+
+        
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> ConfirmarEmail(string userId, string token)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) return RedirectToAction("Login", "Account");
+
+        var result = await _userManager.ConfirmEmailAsync(user, token);
+        if (result.Succeeded)
+        {
+            // Activamos el usuario en nuestra base de datos
+            user.EsActivo = true;
+            await _userManager.UpdateAsync(user);
+            
+            TempData["Message"] = "¡Cuenta activada correctamente! Ya puede iniciar sesión.";
+        }
+        else
+        {
+            TempData["Message"] = "Error al activar la cuenta. Intente nuevamente.";
+        }
+
+        return RedirectToAction("Login", "Account");
+    }
+
+    
 }

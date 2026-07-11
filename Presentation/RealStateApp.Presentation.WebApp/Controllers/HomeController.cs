@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Presentation.WebApp.Models;
 
 namespace RealStateApp.Presentation.WebApp.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class HomeController : Controller
 {
     public IActionResult Index()

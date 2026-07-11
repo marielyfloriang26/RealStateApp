@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
+namespace RealStateApp.Application.ViewModels.User;
 public class RegisterViewModel
 {
     [Required(ErrorMessage = "Debe completar todos los campos requeridos.")]
@@ -24,9 +25,11 @@ public class RegisterViewModel
     public string Email { get; set; }
 
     [Required(ErrorMessage = "Debe completar todos los campos requeridos.")]
+    [DataType(DataType.Password)]
     public string Password { get; set; }
 
     [Required(ErrorMessage = "Debe completar todos los campos requeridos.")]
+    [DataType(DataType.Password)]
     [Compare("Password", ErrorMessage = "La contraseña y la confirmación de contraseña no coinciden.")]
     public string ConfirmPassword { get; set; }
 
