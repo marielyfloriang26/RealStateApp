@@ -1,21 +1,46 @@
-
 @using RealStateApp.Application.ViewModels.User
-
 @model LoginViewModel
-<h2>Iniciar sesión</h2>
 
-<form asp-action="Login" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    
-    <div class="mb-3">
-        <label>Correo o nombre de usuario</label>
-        <input asp-for="EmailOrUserName" class="form-control" />
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Iniciar Sesión en RealEstateApp</h4>
+            </div>
+            <div class="card-body">
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        @TempData["Message"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="EmailOrUserName" class="form-label">Correo o Nombre de usuario</label>
+                        <input asp-for="EmailOrUserName" class="form-control" />
+                        <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Contraseña</label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al inicio</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label>Contraseña</label>
-        <input asp-for="Password" class="form-control" />
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver</a>
-</form>
+</div>

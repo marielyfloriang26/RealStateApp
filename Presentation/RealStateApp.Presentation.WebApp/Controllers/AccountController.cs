@@ -13,12 +13,82 @@ public class AccountController : Controller
     private readonly UserManager<Usuario> _userManager;
     private readonly IUploadService _uploadService;
     private readonly IEmailService _emailService;
+    private readonly SignInManager<Usuario> _signInManager;
 
-    public AccountController(UserManager<Usuario> userManager, IUploadService uploadService, IEmailService emailService)
+    public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, IUploadService uploadService, IEmailService emailService)
     {
         _userManager = userManager;
+        _signInManager = signInManager;
         _uploadService = uploadService;
         _emailService = emailService;
+    }
+
+    [HttpGet]
+    public IActionResult Login() => View(new LoginViewModel());
+
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginViewModel vm)
+    {
+        if (!ModelState.IsValid) return View(vm);
+
+        // 1. Buscar usuario por nombre o email
+        var user = await _userManager.FindByNameAsync(vm.EmailOrUserName) 
+                   ?? await _userManager.FindByEmailAsync(vm.EmailOrUserName);
+
+        if (user == null)
+        {
+            ModelState.AddModelError("", "Los datos de acceso son inválidos.");
+            return View(vm);
+        }
+
+        // 2. Validar estado (Solo usuarios activos)
+        if (!user.EsActivo)
+        {
+            ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
+            return View(vm);
+        }
+
+        // 3. Validar credenciales
+
+        await _signInManager.SignOutAsync();
+
+        var result = await _signInManager.PasswordSignInAsync(user.UserName, vm.Password, false, lockoutOnFailure: false);
+
+        if (!result.Succeeded)
+        {
+            ModelState.AddModelError("", "Los datos de acceso son inválidos.");
+            return View(vm);
+        }
+
+        // 4. Redirección basada en roles
+        var roles = await _userManager.GetRolesAsync(user);
+        if (!roles.Any())
+        {
+            ModelState.AddModelError("", "El usuario no tiene un rol válido asignado. Póngase en contacto con un administrador.");
+            return View(vm);
+        }
+
+        var role = roles.First();
+        return role switch
+        {     // ASIGNAR REDIRECCIONES CORRECTAS
+            "Administrador" => RedirectToAction("Index", "Home"),
+            "Agente" => RedirectToAction("Index","Home"),
+            "Cliente" => RedirectToAction("Index", "Home"),
+            _ => RedirectToAction("Index", "Home")
+        };
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
+    }
+    
+    [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View(); // Esto buscará Views/Account/AccessDenied.cshtml
     }
 
     [HttpGet]
@@ -109,20 +179,6 @@ public class AccountController : Controller
         }
 
         return RedirectToAction("Login", "Account");
-
-        /*// 6. Flujo de mensajes
-        if (vm.TipoUsuario == "Cliente")
-        {
-            // TODO: Implementar envío de correo aquí
-            TempData["Message"] = "Su cuenta ha sido creada correctamente. Revise su correo electrónico para activar su usuario.";
-        }
-        else
-        {
-            TempData["Message"] = "Su cuenta de agente ha sido creada correctamente. Un administrador debe activar su usuario antes de que pueda iniciar sesión.";
-        }
-
-        return RedirectToAction("Login", "Account");*/
-
         
     }
     
@@ -136,6 +192,7 @@ public class AccountController : Controller
         if (result.Succeeded)
         {
             // Activamos el usuario en nuestra base de datos
+            user.EmailConfirmed = true;
             user.EsActivo = true;
             await _userManager.UpdateAsync(user);
             

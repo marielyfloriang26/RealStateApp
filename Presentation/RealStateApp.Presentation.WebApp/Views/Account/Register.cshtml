@@ -51,17 +51,34 @@
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
 
+
+
+
                         <div class="mb-3">
                             <label asp-for="Password" class="form-label"></label>
-                            <input asp-for="Password" type="password" class="form-control" />
+                            <div class="input-group">
+                                <input asp-for="Password" type="password" id="passReg" class="form-control" />
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleReg('passReg', this)">👁️</button>
+                            </div>
                             <span asp-validation-for="Password" class="text-danger"></span>
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div id="strengthBar" class="progress-bar" style="width: 0%"></div>
+                            </div>
+                            <small id="strengthText" class="mt-1 d-block"></small>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="ConfirmPassword" class="form-label"></label>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                            <div class="input-group">
+                                <input asp-for="ConfirmPassword" type="password" id="passConf" class="form-control" />
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleReg('passConf', this)">👁️</button>
+                            </div>
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
+
+
+
+
 
                         <div class="mb-3">
                             <label asp-for="TipoUsuario" class="form-label">Tipo de Usuario</label>
@@ -86,4 +103,30 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleReg(id, btn) {
+            let input = document.getElementById(id);
+            input.type = input.type === "password" ? "text" : "password";
+            btn.textContent = input.type === "password" ? "👁️" : "🔒";
+        }
+
+        document.getElementById('passReg').addEventListener('input', function() {
+            let v = this.value;
+            let score = 0;
+            if(v.length >= 8) score++;
+            if(/[A-Z]/.test(v)) score++;
+            if(/[a-z]/.test(v)) score++;
+            if(/[0-9]/.test(v)) score++;
+            if(/[^A-Za-z0-9]/.test(v)) score++;
+
+            let bar = document.getElementById('strengthBar');
+            let txt = document.getElementById('strengthText');
+
+            if(v.length === 0) { bar.style.width="0%"; txt.textContent=""; }
+            else if(score <= 2) { bar.className="progress-bar bg-danger"; bar.style.width="33%"; txt.textContent="Débil"; txt.className="text-danger"; }
+            else if(score <= 4) { bar.className="progress-bar bg-warning"; bar.style.width="66%"; txt.textContent="Media"; txt.className="text-warning"; }
+            else { bar.className="progress-bar bg-success"; bar.style.width="100%"; txt.textContent="Fuerte"; txt.className="text-success"; }
+        });
+    </script>
+    
 }

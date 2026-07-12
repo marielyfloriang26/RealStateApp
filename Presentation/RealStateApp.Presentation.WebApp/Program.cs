@@ -20,12 +20,20 @@ builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
         options.Password.RequireUppercase = true;
-        options.Password.RequireNonAlphanumeric = true; // Esto es lo que pide el carácter especial
+        options.Password.RequireNonAlphanumeric = false; // Esto es lo que pide el carácter especial
         options.Password.RequiredLength = 8;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>() // Ajusta esto según el nombre de tu contexto
     .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Define a dónde enviar cuando no está logueado
+    options.LoginPath = "/Account/Login";
     
+    // Define a dónde enviar cuando el usuario está logueado pero no tiene el rol
+    options.AccessDeniedPath = "/Account/AccessDenied";
+});
 
 var app = builder.Build();
 
@@ -45,6 +53,20 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    string[] roles = { "Cliente", "Agente" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole<int>(role));
+        }
+    }
+}
 
 app.Run();
 
