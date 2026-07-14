@@ -1,0 +1,32 @@
+@model RealStateApp.Application.ViewModels.Propiedades.SavePropiedadViewModel
+@{
+    ViewData["Title"] = "Eliminar Propiedad";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white">
+            <h4>¿Está seguro que desea eliminar esta propiedad?</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Propiedad Código: @Model.Codigo</h5>
+            <p class="card-text">
+                <strong>Precio:</strong> RD$ @Model.Precio.ToString("N2") <br />
+                <strong>Tamaño:</strong> @Model.TamanoMetros mt2 <br />
+                <strong>Habitaciones:</strong> @Model.CantidadHabitaciones <br />
+                <strong>Baños:</strong> @Model.CantidadBanos
+            </p>
+            <p class="text-muted">
+                Esta acción es irreversible y eliminará todos los datos asociados a la propiedad.
+            </p>
+            
+            <form asp-action="Delete" method="post" class="mt-4">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-danger">Aceptar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

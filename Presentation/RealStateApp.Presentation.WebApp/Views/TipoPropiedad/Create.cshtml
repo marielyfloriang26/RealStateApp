@@ -1,0 +1,44 @@
+@model RealStateApp.Application.ViewModels.TipoPropiedades.SaveTipoPropiedadViewModel
+
+@{
+    ViewData["Title"] = "Crear tipo de propiedad";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Crear tipo de propiedad</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label">Nombre del tipo de propiedad <span class="text-danger">*</span></label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Nombre que identificará el tipo de propiedad" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="4" placeholder="Descripción general del tipo de propiedad"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                            <button type="submit" class="btn btn-success">Crear tipo de propiedad</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

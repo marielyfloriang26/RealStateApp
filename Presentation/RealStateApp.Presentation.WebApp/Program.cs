@@ -1,3 +1,4 @@
+using RealStateApp.Application;
 using RealStateApp.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,7 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
+builder.Services.AddApplicationLayer();
 builder.Services.AddTransient<RealStateApp.Application.Interfaces.Services.IAgentePropiedadService, RealStateApp.Application.Services.AgentePropiedadService>();
+builder.Services.AddTransient<RealStateApp.Application.Interfaces.Services.IMantenimientoPropiedadService, RealStateApp.Application.Services.MantenimientoPropiedadService>();
 
 var app = builder.Build();
 
@@ -27,4 +30,3 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.Run();
-
