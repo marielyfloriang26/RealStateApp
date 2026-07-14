@@ -3,6 +3,7 @@ using RealStateApp.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace RealStateApp.Infrastructure.Persistence.Repositories;
 
@@ -23,6 +24,16 @@ public class RepositoryAsync<T> : IRepositoryAsync<T> where T : class
     public async Task<IReadOnlyList<T>> GetAllAsync()
     {
         return await _dbContext.Set<T>().ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<T>> GetAllWithIncludeAsync(List<string> properties)
+    {
+        var query = _dbContext.Set<T>().AsQueryable();
+        foreach (var property in properties)
+        {
+            query = query.Include(property);
+        }
+        return await query.ToListAsync();
     }
 
     public async Task<T> AddAsync(T entity)

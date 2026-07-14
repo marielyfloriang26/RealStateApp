@@ -1,0 +1,38 @@
+@model RealStateApp.Application.ViewModels.Agente.AgentConversacionViewModel
+
+@{
+    ViewData["Title"] = "Chat con " + Model.NombreCliente;
+}
+
+<div class="container mt-4">
+    <h2>Conversación con @Model.NombreCliente</h2>
+    <hr />
+
+    <div class="chat-box bg-light p-3 mb-3" style="height: 400px; overflow-y: scroll;">
+        @foreach (var msj in Model.Mensajes)
+        {
+            <div class="mb-2">
+                <strong>@msj.Remitente:</strong>
+                <span class="text-muted" style="font-size: 0.8em">@msj.FechaEnvio.ToString("g")</span>
+                <p class="mb-0">@msj.Contenido</p>
+            </div>
+        }
+    </div>
+
+    <form asp-action="EnviarMensaje" method="post">
+        <input type="hidden" asp-for="PropiedadId" />
+        <input type="hidden" asp-for="ClienteId" />
+        
+        <div class="form-group mb-3">
+            <label asp-for="NuevoMensaje">Mensaje</label>
+            <textarea asp-for="NuevoMensaje" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="NuevoMensaje" class="text-danger"></span>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Enviar respuesta</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
+builder.Services.AddTransient<RealStateApp.Application.Interfaces.Services.IAgentePropiedadService, RealStateApp.Application.Services.AgentePropiedadService>();
 
 var app = builder.Build();
 

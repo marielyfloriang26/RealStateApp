@@ -1,0 +1,60 @@
+@model RealStateApp.Application.ViewModels.Agente.AgentOfertasPorClienteViewModel
+
+@{
+    ViewData["Title"] = "Ofertas de " + Model.NombreCliente;
+}
+
+<div class="container mt-4">
+    <h2>Ofertas de @Model.NombreCliente</h2>
+    <hr />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fecha de Oferta</th>
+                <th>Monto Ofertado</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var oferta in Model.Ofertas)
+            {
+                <tr>
+                    <td>@oferta.FechaOferta.ToString("d")</td>
+                    <td>$@oferta.MontoOfertado.ToString("N2")</td>
+                    <td>@oferta.Estado</td>
+                    <td>
+                        @if (oferta.Estado == "Pendiente")
+                        {
+                            <form asp-action="ResponderOferta" method="post" style="display:inline;">
+                                <input type="hidden" name="ofertaId" value="@oferta.OfertaId" />
+                                <input type="hidden" name="propiedadId" value="@Model.PropiedadId" />
+                                <input type="hidden" name="clienteId" value="@Model.ClienteId" />
+                                <input type="hidden" name="respuesta" value="Aceptada" />
+                                <button type="submit" class="btn btn-sm btn-success">Aceptar</button>
+                            </form>
+                            
+                            <form asp-action="ResponderOferta" method="post" style="display:inline;">
+                                <input type="hidden" name="ofertaId" value="@oferta.OfertaId" />
+                                <input type="hidden" name="propiedadId" value="@Model.PropiedadId" />
+                                <input type="hidden" name="clienteId" value="@Model.ClienteId" />
+                                <input type="hidden" name="respuesta" value="Rechazada" />
+                                <button type="submit" class="btn btn-sm btn-danger">Rechazar</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
