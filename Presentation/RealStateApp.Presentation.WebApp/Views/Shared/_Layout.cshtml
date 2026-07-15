@@ -32,6 +32,7 @@
                     
                     @if (User.Identity.IsAuthenticated)
                     {
+
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
@@ -51,6 +52,46 @@
                                 </form>
                             </li>
                         }
+
+                                            {
+                        @if (User.IsInRole("Agente"))
+                        {
+                            <ul class="navbar-nav me-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white-50" asp-controller="Agente" asp-action="Index">Home del Agente</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white-50" asp-controller="Agente" asp-action="Perfil">Mi Perfil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white-50" asp-controller="MantenimientoPropiedad" asp-action="Index">Mantenimiento de Propiedades</a>
+                                </li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="navbar-nav me-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Agentes">Agentes</a>
+                                </li>
+                            </ul>
+                        }
+                    }
+                    }
+
+                    <ul class="navbar-nav ms-auto align-items-center gap-2">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        }
+
                         else
                         {
                             <li class="nav-item">

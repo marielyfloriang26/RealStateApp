@@ -21,7 +21,7 @@ public class GeneralProfile : Profile
             .ForMember(dest => dest.ImagenesUrl, opt => opt.MapFrom(src => src.Imagenes != null ? src.Imagenes.Select(i => i.ImagenUrl).ToList() : new List<string>()))
             .ForMember(dest => dest.Mejoras, opt => opt.MapFrom(src => src.PropiedadMejoras != null ? src.PropiedadMejoras.Select(pm => pm.Mejora != null ? pm.Mejora.Nombre : "").ToList() : new List<string>()));
 
-        CreateMap<Propiedad, TipoPropiedadViewModel>().ReverseMap();
+        CreateMap<TipoPropiedad, TipoPropiedadViewModel>().ReverseMap();
 
         // Mapeo para Agentes
         CreateMap<Usuario, AgenteViewModel>().ForMember(dest => dest.Telefono, opt => opt.MapFrom(src => src.PhoneNumber)).ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.Email)).ForMember(dest => dest.CantidadPropiedades, opt => opt.MapFrom(src => src.Propiedades != null ? src.Propiedades.Count(p => p.Estado == "Disponible") : 0));
