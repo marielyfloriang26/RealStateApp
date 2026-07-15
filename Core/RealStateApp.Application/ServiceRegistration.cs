@@ -10,8 +10,12 @@ public static class ServiceRegistration
     public static void AddApplicationLayer(this IServiceCollection services)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        #region Services
         services.AddTransient<ITipoPropiedadService, TipoPropiedadService>();
         services.AddTransient<ITipoVentaService, TipoVentaService>();
         services.AddTransient<IMejoraService, MejoraService>();
+        services.AddTransient<IPropiedadService, PropiedadService>();
+        services.AddTransient<IAgenteService, AgenteService>();
+        #endregion
     }
 }

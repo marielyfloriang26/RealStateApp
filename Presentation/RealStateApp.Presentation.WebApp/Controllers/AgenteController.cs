@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Application.Interfaces.Services;
 using RealStateApp.Application.ViewModels.Agente;
+using RealStateApp.Domain.Entities;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -11,16 +13,35 @@ namespace RealStateApp.Presentation.WebApp.Controllers;
 public class AgenteController : Controller
 {
     private readonly IAgentePropiedadService _agentePropiedadService;
+    private readonly IPropiedadService _propiedadService;
+    private readonly UserManager<Usuario> _userManager;
 
-    public AgenteController(IAgentePropiedadService agentePropiedadService)
+    public AgenteController(IAgentePropiedadService agentePropiedadService, IPropiedadService propiedadService, UserManager<Usuario> userManager)
     {
         _agentePropiedadService = agentePropiedadService;
+        _propiedadService = propiedadService;
+        _userManager = userManager;
     }
 
     private int GetAgenteId()
     {
         var claim = User.FindFirst(ClaimTypes.NameIdentifier);
         return claim != null ? int.Parse(claim.Value) : 0;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var agentIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(agentIdClaim))
+        {
+            return RedirectToAction("Login", "Home");
+        }
+
+        int agentId = int.Parse(agentIdClaim);
+        
+        var propiedades = await _propiedadService.GetPropertiesByAgentIdAsync(agentId);
+
+        return View(propiedades);
     }
 
     // --- Detalle Propiedad ---

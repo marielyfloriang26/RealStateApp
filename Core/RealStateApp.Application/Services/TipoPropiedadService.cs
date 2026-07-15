@@ -14,12 +14,14 @@ public class TipoPropiedadService : GenericService<SaveTipoPropiedadViewModel, T
 {
     private readonly ITipoPropiedadRepository _tipoPropiedadRepository;
     private readonly IPropiedadRepository _propiedadRepository;
+    private readonly IMapper _mapper;
 
     public TipoPropiedadService(ITipoPropiedadRepository tipoPropiedadRepository, IPropiedadRepository propiedadRepository, IMapper mapper) 
         : base(tipoPropiedadRepository, mapper)
     {
         _tipoPropiedadRepository = tipoPropiedadRepository;
         _propiedadRepository = propiedadRepository;
+        _mapper = mapper;
     }
 
     public override async Task<List<TipoPropiedadViewModel>> GetAllViewModel()
@@ -32,6 +34,12 @@ public class TipoPropiedadService : GenericService<SaveTipoPropiedadViewModel, T
             Descripcion = e.Descripcion,
             CantidadPropiedadesAsociadas = e.Propiedades != null ? e.Propiedades.Count : 0
         }).ToList();
+    }
+
+    public async Task<List<RealStateApp.Application.ViewModels.Propiedad.TipoPropiedadViewModel>> GetAllAsync()
+    {
+        var list = await _tipoPropiedadRepository.GetAllAsync();
+        return _mapper.Map<List<RealStateApp.Application.ViewModels.Propiedad.TipoPropiedadViewModel>>(list);
     }
 
     public override async Task Delete(int id)

@@ -5,5 +5,5 @@ namespace RealStateApp.Application.Interfaces.Services;
 
 public interface IEmailService
 {
-    Task SendAsync(string to, string subject, string htmlMessage);
+    Task SendEmailAsync(string email, string subject, string body);
 }

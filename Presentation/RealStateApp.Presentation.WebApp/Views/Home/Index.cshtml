@@ -1,8 +1,185 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using RealStateApp.Application.ViewModels.Propiedad
+@model List<PropiedadViewModel>
+@{
+    ViewData["Title"] = "Listado de Propiedades";
+    var filter = ViewBag.Filter as FiltroPropiedadViewModel ?? new FiltroPropiedadViewModel();
+    var tiposPropiedad = ViewBag.TiposPropiedad as List<TipoPropiedadViewModel> ?? new List<TipoPropiedadViewModel>();
+    var searchCode = ViewBag.SearchCode as string;
+    var errorMessage = ViewBag.ErrorMessage as string;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="hero-section text-center text-white py-5 px-4 mb-5 rounded-4 shadow-lg">
+    <div class="py-3">
+        <h1 class="display-4 fw-bold mb-3">Encuentra tu hogar ideal</h1>
+        <p class="lead mb-4 opacity-75">Busca entre las mejores propiedades y proyectos inmobiliarios</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <form asp-action="Index" method="get" class="d-flex shadow-sm bg-white p-2 rounded-pill">
+                    <input type="text" name="searchCode" value="@searchCode" placeholder="Ingresa el código de 6 dígitos de la propiedad..." class="form-control border-0 px-4 rounded-pill bg-transparent focus-none" autocomplete="off" />
+                    <button type="submit" class="btn btn-gradient px-4 py-2 rounded-pill fw-semibold">
+                        Buscar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Sidebar filtros -->
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm p-4 sticky-top glass-card rounded-4" style="top: 2rem;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0 text-dark">Filtros</h4>
+                @if (filter.TipoPropiedadId != null || filter.PrecioMinimo != null || filter.PrecioMaximo != null || filter.CantidadHabitaciones != null || filter.CantidadBanos != null)
+                {
+                    <a asp-action="Index" class="text-decoration-none text-muted small"><i class="bi bi-x-circle"></i> Limpiar</a>
+                }
+            </div>
+            
+            <form asp-action="Index" method="get">
+                <!-- Tipo Propiedad -->
+                <div class="mb-3">
+                    <label class="form-label text-secondary fw-semibold small">Tipo de Propiedad</label>
+                    <select name="TipoPropiedadId" class="form-select rounded-3 border-2 border-light py-2">
+                        <option value="">Todos los tipos</option>
+                        @foreach (var tp in tiposPropiedad)
+                        {
+                            <!option value="@tp.Id" @(filter.TipoPropiedadId == tp.Id ? "selected" : "")>@tp.Nombre</!option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Rango Precio -->
+                <div class="mb-3">
+                    <label class="form-label text-secondary fw-semibold small">Precio Mínimo (DOP)</label>
+                    <input type="number" name="PrecioMinimo" value="@filter.PrecioMinimo" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Ej. 100000" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary fw-semibold small">Precio Máximo (DOP)</label>
+                    <input type="number" name="PrecioMaximo" value="@filter.PrecioMaximo" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Ej. 5000000" />
+                </div>
+
+                <!-- Habitaciones -->
+                <div class="mb-3">
+                    <label class="form-label text-secondary fw-semibold small">Habitaciones</label>
+                    <input type="number" name="CantidadHabitaciones" value="@filter.CantidadHabitaciones" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Cantidad de habitaciones" />
+                </div>
+
+                <!-- Baños -->
+                <div class="mb-4">
+                    <label class="form-label text-secondary fw-semibold small">Baños</label>
+                    <input type="number" name="CantidadBanos" value="@filter.CantidadBanos" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Cantidad de baños" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold shadow">Filtrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="col-lg-9">
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-warning border-0 shadow-sm p-4 rounded-4 mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="fs-1 text-warning me-3">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                    </div>
+                    <div>
+                        <h5 class="alert-heading fw-bold mb-1">Sin resultados</h5>
+                        <p class="mb-0 text-secondary">@errorMessage</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+            @foreach (var propiedad in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-hover-sm rounded-4 overflow-hidden bg-white">
+                        <!-- Card Image -->
+                        <div class="position-relative card-img-wrapper" style="height: 200px;">
+                            @if (propiedad.ImagenesUrl != null && propiedad.ImagenesUrl.Count > 0)
+                            {
+                                <img src="@propiedad.ImagenesUrl[0]" class="w-100 h-100 object-fit-cover" alt="Imagen principal" />
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center bg-light text-muted">
+                                    <i class="bi bi-house-door fs-1 mb-2"></i>
+                                    <span class="small">Sin Imagen</span>
+                                </div>
+                            }
+                            
+                            <!-- Badges over image -->
+                            <div class="position-absolute top-0 start-0 m-3 d-flex flex-column gap-1-5">
+                                <span class="badge bg-primary text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
+                                    @propiedad.TipoPropiedadNombre
+                                </span>
+                                <span class="badge bg-success text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
+                                    @propiedad.TipoVentaNombre
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted small fw-semibold">Código: @propiedad.Codigo</span>
+                                <span class="text-primary fw-bold fs-5">RD$ @propiedad.Precio.ToString("N2")</span>
+                            </div>
+
+                            <p class="card-text text-muted small text-truncate-2 mb-3">
+                                @propiedad.Descripcion
+                            </p>
+
+                            <!-- Features List -->
+                            <div class="row row-cols-3 g-2 text-center border-top pt-3 mt-auto">
+                                <div class="col">
+                                    <div class="p-1 rounded bg-light">
+                                        <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Habs</div>
+                                        <div class="fw-bold text-dark">@propiedad.CantidadHabitaciones</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-1 rounded bg-light">
+                                        <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Baños</div>
+                                        <div class="fw-bold text-dark">@propiedad.CantidadBanos</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-1 rounded bg-light">
+                                        <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Mts²</div>
+                                        <div class="fw-bold text-dark">@propiedad.TamanoMetros.ToString("N0")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+                            <a asp-action="Details" asp-route-id="@propiedad.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold shadow-sm transition">
+                                Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        @if (Model.Count == 0 && string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="text-center py-5">
+                <div class="text-muted mb-3">
+                    <i class="bi bi-houses fs-1"></i>
+                </div>
+                <h4 class="fw-bold">No hay propiedades registradas</h4>
+                <p class="text-muted">Actualmente no existen propiedades en estado disponible en el sistema.</p>
+            </div>
+        }
+    </div>
 </div>
