@@ -31,7 +31,10 @@
 
                     <div class="mb-3">
                         <label asp-for="Password" class="form-label">Contraseña</label>
-                        <input asp-for="Password" type="password" class="form-control" />
+                        <div class="input-group">
+                            <input asp-for="Password" type="password" id="passLogin" class="form-control" />
+                            <button class="btn btn-outline-secondary" type="button" onclick="toggleVisibility('passLogin', this)">👁️</button>
+                        </div>
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
@@ -44,3 +47,19 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleVisibility(id, btn) {
+            let input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                btn.textContent = "🔒";
+            } else {
+                input.type = "password";
+                btn.textContent = "👁️";
+            }
+        }
+    </script>
+}
