@@ -28,35 +28,12 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarContent">
-                    
-                    @if (User.Identity.IsAuthenticated)
+                                <div class="collapse navbar-collapse" id="navbarContent">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-
-                        <ul class="navbar-nav me-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Agentes">Agentes</a>
-                            </li>
-                        </ul>
-                    }
-
-                    <ul class="navbar-nav ms-auto align-items-center gap-2">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
-                                </form>
-                            </li>
-                        }
-
-                                            {
                         @if (User.IsInRole("Agente"))
                         {
-                            <ul class="navbar-nav me-auto">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li class="nav-item">
                                     <a class="nav-link text-white-50" asp-controller="Agente" asp-action="Index">Home del Agente</a>
                                 </li>
@@ -68,40 +45,63 @@
                                 </li>
                             </ul>
                         }
-                        else
+                        else if (User.IsInRole("Cliente"))
                         {
-                            <ul class="navbar-nav me-auto">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                                    <a class="nav-link text-white-50" asp-controller="Cliente" asp-action="Index">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Home" asp-action="Agentes">Agentes</a>
+                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Agentes">Agentes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white-50" asp-controller="Cliente" asp-action="MisPropiedades">Mis Propiedades</a>
                                 </li>
                             </ul>
                         }
-                    }
-                    }
-
-                    <ul class="navbar-nav ms-auto align-items-center gap-2">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
-                                </form>
-                            </li>
-                        }
-
                         else
                         {
-                            <li class="nav-item">
-                                <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Register">Únete a la app</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
-                            </li>
+                            <!-- Otros roles como Administrador / Desarrollador -->
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Agentes">Agentes</a>
+                                </li>
+                            </ul>
                         }
-                    </ul>
+
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
+                            <li class="nav-item text-white-50 me-2 small">
+                                Bienvenido, <span class="fw-bold text-white">@User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-light rounded-pill px-3 py-1.5 btn-sm">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-white-50" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white-50" asp-controller="Home" asp-action="Agentes">Agentes</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light rounded-pill px-3 py-1.5 btn-sm" asp-controller="Account" asp-action="Register">Únete a la app</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-gradient rounded-pill px-4 py-1.5 btn-sm" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>
