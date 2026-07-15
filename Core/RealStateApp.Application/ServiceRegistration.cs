@@ -12,5 +12,6 @@ public static class ServiceRegistration
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddTransient<ITipoPropiedadService, TipoPropiedadService>();
         services.AddTransient<ITipoVentaService, TipoVentaService>();
+        services.AddTransient<IMejoraService, MejoraService>();
     }
 }

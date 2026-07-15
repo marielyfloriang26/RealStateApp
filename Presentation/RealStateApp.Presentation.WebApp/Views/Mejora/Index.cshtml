@@ -1,0 +1,91 @@
+@using RealStateApp.Application.ViewModels.Mejoras
+@model List<MejoraViewModel>
+@{
+    ViewData["Title"] = "Mantenimiento de mejoras";
+}
+
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col-6">
+            <h2>Mantenimiento de mejoras</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-action="Create" class="btn btn-primary">Crear mejora</a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning">
+            No existen mejoras registradas.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre de la mejora</th>
+                        <th>Descripción</th>
+                        <th>Cantidad de propiedades asociadas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var mejora in Model)
+                    {
+                        <tr>
+                            <td>@mejora.Nombre</td>
+                            <td>@mejora.Descripcion</td>
+                            <td>@mejora.CantidadPropiedades</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@mejora.Id" class="btn btn-sm btn-warning">Editar</a>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@mejora.Id">
+                                    Eliminar
+                                </button>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal-@mejora.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@mejora.Id" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel-@mejora.Id">Eliminar mejora</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Está seguro que desea eliminar esta mejora?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <form asp-action="Delete" asp-route-id="@mejora.Id" method="post">
+                                                    <button type="submit" class="btn btn-danger">Aceptar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
