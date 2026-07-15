@@ -52,7 +52,7 @@ public class AccountController : Controller
 
         await _signInManager.SignOutAsync();
 
-        var result = await _signInManager.PasswordSignInAsync(user.UserName, vm.Password, false, lockoutOnFailure: false);
+        var result = await _signInManager.PasswordSignInAsync(user.UserName!, vm.Password, false, lockoutOnFailure: false);
 
         if (!result.Succeeded)
         {

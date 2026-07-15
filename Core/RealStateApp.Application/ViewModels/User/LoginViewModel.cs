@@ -5,9 +5,9 @@ namespace RealStateApp.Application.ViewModels.User;
 public class LoginViewModel
 {
     [Required(ErrorMessage = "Debe ingresar su correo o nombre de usuario.")]
-    public string EmailOrUserName { get; set; }
+    public string EmailOrUserName { get; set; } = null!;
 
     [Required(ErrorMessage = "Debe ingresar su contraseña.")]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public string Password { get; set; } = null!;
 }

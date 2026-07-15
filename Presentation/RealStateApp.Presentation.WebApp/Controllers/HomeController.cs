@@ -95,7 +95,7 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> Agentes(string? searchName)
 {
-    var agentes = await _agenteService.SearchByNameAsync(searchName);
+    var agentes = await _agenteService.SearchByNameAsync(searchName ?? string.Empty);
     ViewBag.SearchName = searchName;
 
     if (agentes.Count == 0 && !string.IsNullOrWhiteSpace(searchName))

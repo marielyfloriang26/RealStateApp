@@ -14,13 +14,15 @@ public class EmailService : IEmailService
     public async Task SendEmailAsync(string email, string subject, string body)
     {
         var smtpSettings = _config.GetSection("SmtpSettings");
-        var client = new SmtpClient(smtpSettings["Host"], int.Parse(smtpSettings["Port"]))
+        var port = int.Parse(smtpSettings["Port"] ?? throw new InvalidOperationException("SmtpSettings:Port no está configurado."));
+        var client = new SmtpClient(smtpSettings["Host"], port)
         {
             Credentials = new NetworkCredential(smtpSettings["User"], smtpSettings["Pass"]),
             EnableSsl = true
         };
 
-        var mailMessage = new MailMessage(smtpSettings["From"], email, subject, body)
+        var from = smtpSettings["From"] ?? throw new InvalidOperationException("SmtpSettings:From no está configurado.");
+        var mailMessage = new MailMessage(from, email, subject, body)
         {
             IsBodyHtml = true
         };

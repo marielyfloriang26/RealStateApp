@@ -18,6 +18,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- AutoMapper fix (GHSA-rvv3-g6hj-g44x) requires AutoMapper 16+ which targets .NET 10.
+         Using latest compatible version (15.x) for net9.0. Suppressed until .NET 10 migration. -->
+    <NoWarn>$(NoWarn);NU1902;NU1903</NoWarn>
   </PropertyGroup>
 
 </Project>
