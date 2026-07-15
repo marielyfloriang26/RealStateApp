@@ -28,13 +28,9 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
                 <div class="collapse navbar-collapse" id="navbarContent">
-                    
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.IsInRole("Administrador"))
@@ -44,18 +40,27 @@
                                         Administración
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Home del Administrador</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Dashboard Admin</a></li>
                                         <li><a class="dropdown-item" asp-controller="Admin" asp-action="ListarAgentes">Listado de Agentes</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="MantenimientoAdministradores">Mantenimiento Administradores</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="MantenimientoAdministradores">Mantenimiento Admin</a></li>
                                         <li><a class="dropdown-item" asp-controller="Admin" asp-action="MantenimientoDesarrolladores">Mantenimiento Desarrolladores</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="TipoPropiedades">Mantenimiento Tipo de Propiedades</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="TipoVentas">Mantenimiento Tipo de Ventas</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Mejoras">Mantenimiento Mejoras</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="TipoPropiedades">Tipo de Propiedades</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="TipoVentas">Tipo de Ventas</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Mejoras">Mejoras</a></li>
                                     </ul>
                                 </li>
                             }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Agentes">Agentes</a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Agentes">Agentes</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                         }
                     </ul>

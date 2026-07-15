@@ -71,7 +71,7 @@ public class AccountController : Controller
         var role = roles.First();
         return role switch
         {     // ASIGNAR REDIRECCIONES CORRECTAS
-            "Administrador" => RedirectToAction("Index", "Admin"),
+            "Administrador" => RedirectToAction("Index", "Home"),
             "Agente" => RedirectToAction("Index","Home"),
             "Cliente" => RedirectToAction("Index", "Home"),
             _ => RedirectToAction("Index", "Home")
