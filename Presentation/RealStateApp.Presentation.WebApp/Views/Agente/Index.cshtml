@@ -1,0 +1,99 @@
+@using RealStateApp.Application.ViewModels.Propiedad
+@model List<AgenteViewModel>
+@{
+    ViewData["Title"] = "Nuestros Agentes";
+    var searchName = ViewBag.SearchName as string;
+    var errorMessage = ViewBag.ErrorMessage as string;
+}
+
+<div class="container my-4">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-dark display-5 mb-2">Conoce a nuestros agentes</h1>
+        <p class="text-muted fs-5">Profesionales comprometidos con ayudarte a encontrar tu espacio ideal.</p>
+        
+        <!-- Search Bar by Name -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8 col-lg-6">
+                <form asp-action="Agentes" method="get" class="d-flex shadow-sm bg-white p-2 rounded-pill">
+                    <input type="text" name="searchName" value="@searchName" placeholder="Buscar agente por nombre o apellido..." class="form-control border-0 px-4 rounded-pill bg-transparent focus-none" autocomplete="off" />
+                    <button type="submit" class="btn btn-gradient px-4 py-2 rounded-pill fw-semibold">
+                        Buscar
+                    </button>
+                    @if (!string.IsNullOrWhiteSpace(searchName))
+                    {
+                        <a asp-action="Agentes" class="btn btn-outline-secondary rounded-pill px-3 py-2 ms-2 d-flex align-items-center justify-content-center">
+                            Limpiar
+                        </a>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-warning border-0 shadow-sm p-4 rounded-4 mb-5" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-circle-fill fs-2 text-warning me-3"></i>
+                <div>
+                    <h5 class="alert-heading fw-bold mb-1">Sin resultados</h5>
+                    <p class="mb-0 text-secondary">@errorMessage</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Agents Grid -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var agente in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-hover-sm rounded-4 overflow-hidden bg-white text-center p-4">
+                    <!-- Photo -->
+                    <div class="mb-3 d-inline-block position-relative">
+                        @if (!string.IsNullOrEmpty(agente.FotoUrl))
+                        {
+                            <img src="@agente.FotoUrl" class="rounded-circle border border-4 border-light shadow-sm" style="width: 110px; height: 110px; object-fit: cover;" alt="Foto Agente" />
+                        }
+                        else
+                        {
+                            <div class="rounded-circle border border-4 border-light shadow-sm bg-light d-flex justify-content-center align-items-center text-muted" style="width: 110px; height: 110px; margin: 0 auto;">
+                                <i class="bi bi-person-fill fs-2"></i>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Name -->
+                    <h5 class="fw-bold text-dark mb-1">@agente.Nombre @agente.Apellido</h5>
+                    <p class="text-primary small fw-semibold mb-3">Agente Inmobiliario</p>
+                    
+                    <!-- Properties Count Info -->
+                    <div class="bg-light rounded-3 p-2 mb-4">
+                        <span class="text-secondary small d-block">Propiedades disponibles</span>
+                        <span class="fw-bold text-dark fs-5">@agente.CantidadPropiedades</span>
+                    </div>
+
+                    <!-- Redirect Button -->
+                    <div class="mt-auto">
+                        <a asp-action="PropiedadesAgente" asp-route-id="@agente.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold btn-sm py-2">
+                            Ver Propiedades
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.Count == 0 && string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="text-center py-5">
+            <div class="text-muted mb-3">
+                <i class="bi bi-people fs-1"></i>
+            </div>
+            <h4 class="fw-bold">No hay agentes activos</h4>
+            <p class="text-muted">Actualmente no existen agentes registrados y activos en el sistema.</p>
+        </div>
+    }
+</div>

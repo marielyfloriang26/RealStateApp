@@ -11,10 +11,15 @@ public class HomeController : Controller
     private readonly IPropiedadService _propiedadService;
     private readonly ITipoPropiedadService _tipoPropiedadService;
 
-    public HomeController(IPropiedadService propiedadService, ITipoPropiedadService tipoPropiedadService)
+    private readonly IAgenteService _agenteService; 
+    public HomeController(
+        IPropiedadService propiedadService, 
+        ITipoPropiedadService tipoPropiedadService, 
+        IAgenteService agenteService)
     {
         _propiedadService = propiedadService;
         _tipoPropiedadService = tipoPropiedadService;
+        _agenteService = agenteService;
     }
 
     public async Task<IActionResult> Index(string? searchCode, FiltroPropiedadViewModel filter)
@@ -86,4 +91,32 @@ public class HomeController : Controller
         }
         return View(propiedad);
     }
+    public async Task<IActionResult> Agentes(string? searchName)
+{
+    var agentes = await _agenteService.SearchByNameAsync(searchName);
+    ViewBag.SearchName = searchName;
+
+    if (agentes.Count == 0 && !string.IsNullOrWhiteSpace(searchName))
+    {
+        ViewBag.ErrorMessage = "No se encontraron agentes activos con el nombre ingresado.";
+    }
+
+    return View(agentes);
+}
+
+public async Task<IActionResult> PropiedadesAgente(int id)
+{
+    var agente = await _agenteService.GetByIdAsync(id);
+    if (agente == null)
+    {
+        ViewBag.Message = "El agente solicitado no existe o no se encuentra disponible.";
+        return View("PropertyNotFound");
+    }
+
+    var propiedades = await _propiedadService.GetPropertiesByAgentIdAsync(id);
+    var disponibles = propiedades.Where(p => p.Estado == "Disponible").ToList();
+
+    ViewBag.Agente = agente;
+    return View(disponibles);
+}
 }

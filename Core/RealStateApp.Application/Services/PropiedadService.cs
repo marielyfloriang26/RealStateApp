@@ -80,4 +80,12 @@ public class PropiedadService : IPropiedadService
 
         return list;
     }
+    public async Task<List<PropiedadViewModel>> GetPropertiesByAgentIdAsync(int agentId)
+{
+    var propiedades = await _propiedadRepository.GetAllWithIncludeAsync();
+    // Filtra las propiedades del agente, tanto Disponibles como Vendidas
+    var agentePropiedades = propiedades.Where(p => p.AgenteId == agentId) .OrderByDescending(p => p.FechaCreacion).ToList();
+
+    return _mapper.Map<List<PropiedadViewModel>>(agentePropiedades);
+}
 }

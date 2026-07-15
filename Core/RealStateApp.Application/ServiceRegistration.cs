@@ -14,6 +14,7 @@ public static class ServiceRegistration
         #region Services
         services.AddTransient<IPropiedadService, PropiedadService>();
         services.AddTransient<ITipoPropiedadService, TipoPropiedadService>();
+        services.AddTransient<IAgenteService, AgenteService>();
         #endregion
     }
 }
