@@ -1,0 +1,161 @@
+@model RealStateApp.Application.ViewModels.Propiedad.PropiedadViewModel
+@{
+    ViewData["Title"] = "Detalle de Propiedad";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Main Column (Imagenes, Info, Descripcion, mejoras) -->
+        <div class="col-lg-8 mb-4">
+            <!-- carrusel de imagenes -->
+            <div id="propertyCarousel" class="carousel slide shadow rounded-4 overflow-hidden mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner" style="height: 450px;">
+                    @if (Model.ImagenesUrl != null && Model.ImagenesUrl.Count > 0)
+                    {
+                        for (int i = 0; i < Model.ImagenesUrl.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "") h-100">
+                                <img src="@Model.ImagenesUrl[i]" class="d-block w-100 h-100 object-fit-cover" alt="Imagen de la propiedad" />
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active h-100 bg-light d-flex flex-column justify-content-center align-items-center text-muted">
+                            <i class="bi bi-house fs-1 mb-3"></i>
+                            <span class="fs-5">Imagen no disponible</span>
+                        </div>
+                    }
+                </div>
+                @if (Model.ImagenesUrl != null && Model.ImagenesUrl.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                }
+            </div>
+
+            <!-- Propiedad Overview -->
+            <div class="card border-0 shadow-sm p-4 rounded-4 mb-4 bg-white">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold mb-0 text-dark">Detalles de la Propiedad</h2>
+                    <span class="fs-3 fw-bold text-primary">RD$ @Model.Precio.ToString("N2")</span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <span class="badge bg-primary rounded-pill px-3 py-1.5 fw-bold shadow-sm">@Model.TipoPropiedadNombre</span>
+                    <span class="badge bg-success rounded-pill px-3 py-1.5 fw-bold shadow-sm">@Model.TipoVentaNombre</span>
+                    <span class="badge bg-secondary rounded-pill px-3 py-1.5 fw-bold shadow-sm">Código: @Model.Codigo</span>
+                </div>
+
+                <!-- cuadro detalles -->
+                <div class="row g-3 text-center mb-4">
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="small text-muted fw-semibold mb-1">Habitaciones</div>
+                            <div class="fs-4 fw-bold text-dark">@Model.CantidadHabitaciones</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="small text-muted fw-semibold mb-1">Baños</div>
+                            <div class="fs-4 fw-bold text-dark">@Model.CantidadBanos</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="small text-muted fw-semibold mb-1">Metros Cuadrados</div>
+                            <div class="fs-4 fw-bold text-dark">@Model.TamanoMetros.ToString("N0") m²</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="small text-muted fw-semibold mb-1">Estado</div>
+                            <div class="fs-4 fw-bold text-success">@Model.Estado</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <h4 class="fw-bold text-dark mb-3">Descripción</h4>
+                <p class="text-secondary leading-relaxed mb-4">
+                    @Model.Descripcion
+                </p>
+
+                <!-- mejoras -->
+                <h4 class="fw-bold text-dark mb-3">Mejoras de la Propiedad</h4>
+                <div class="d-flex flex-wrap gap-2">
+                    @if (Model.Mejoras != null && Model.Mejoras.Count > 0)
+                    {
+                        foreach (var mejora in Model.Mejoras)
+                        {
+                            <span class="badge bg-light text-dark border border-2 rounded-pill px-3 py-2 fw-semibold">
+                                <i class="bi bi-check2-circle text-primary me-1"></i> @mejora
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted small">Esta propiedad no posee mejoras registradas.</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Column (detalles agente) -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-white text-center sticky-top" style="top: 2rem;">
+                <h4 class="fw-bold text-dark mb-4">Agente Inmobiliario</h4>
+
+                <!-- foto agente -->
+                <div class="mb-3 d-inline-block position-relative">
+                    @if (!string.IsNullOrEmpty(Model.AgenteFotoUrl))
+                    {
+                        <img src="@Model.AgenteFotoUrl" class="rounded-circle border border-4 border-light shadow" style="width: 130px; height: 130px; object-fit: cover;" alt="Foto del Agente" />
+                    }
+                    else
+                    {
+                        <div class="rounded-circle border border-4 border-light shadow bg-light d-flex justify-content-center align-items-center text-muted" style="width: 130px; height: 130px; margin: 0 auto;">
+                            <i class="bi bi-person-fill fs-1"></i>
+                        </div>
+                    }
+                </div>
+
+                <h3 class="fw-bold text-dark mb-1">@Model.AgenteNombre @Model.AgenteApellido</h3>
+                <p class="text-primary small fw-semibold mb-4">Agente Registrado</p>
+
+                <!-- Contact Info -->
+                <div class="text-start border-top pt-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-light p-2.5 rounded-circle me-3 text-primary">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted fw-semibold">Teléfono</div>
+                            <div class="fw-bold text-dark">@(string.IsNullOrEmpty(Model.AgenteTelefono) ? "No especificado" : Model.AgenteTelefono)</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-light p-2.5 rounded-circle me-3 text-primary">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div style="word-break: break-all;">
+                            <div class="small text-muted fw-semibold">Correo Electrónico</div>
+                            <div class="fw-bold text-dark">@(string.IsNullOrEmpty(Model.AgenteCorreo) ? "No especificado" : Model.AgenteCorreo)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <a asp-action="Index" class="btn btn-outline-secondary w-100 rounded-pill py-2.5 fw-bold mt-2">
+                    Volver al Listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

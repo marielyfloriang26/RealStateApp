@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using RealStateApp.Domain.Entities;
+using RealStateApp.Application;
 using RealStateApp.Infrastructure.Persistence;
 using RealStateApp.Infrastructure.Persistence.Contexts;
 using RealStateApp.Infrastructure.Shared;
@@ -35,6 +36,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+builder.Services.AddApplicationLayer();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
