@@ -10,5 +10,6 @@ public static class ServiceRegistration
     public static void AddSharedInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<IEmailService, EmailService>();
+        services.AddTransient<IUploadService, UploadService>();
     }
 }
