@@ -1,3 +1,4 @@
+using RealStateApp.Application;
 using RealStateApp.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
 
+builder.Services.AddApplicationLayer();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
