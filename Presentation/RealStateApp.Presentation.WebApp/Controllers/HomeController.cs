@@ -4,10 +4,10 @@ using RealStateApp.Application.Interfaces.Services;
 using RealStateApp.Application.ViewModels.Propiedad;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RealStateApp.Presentation.WebApp.Controllers;
 
-[Authorize(Roles = "Administrador")]
 public class HomeController : Controller
 {
     private readonly IPropiedadService _propiedadService;
