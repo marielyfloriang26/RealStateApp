@@ -17,6 +17,8 @@ public static class ServiceRegistration
         services.AddTransient<IPropiedadService, PropiedadService>();
         services.AddTransient<IAgenteService, AgenteService>();
         services.AddTransient<IPropiedadFavoritaService, PropiedadFavoritaService>();
+        services.AddTransient<IMensajeService, MensajeService>();
+        services.AddTransient<IOfertaService, OfertaService>();
         #endregion
     }
 }

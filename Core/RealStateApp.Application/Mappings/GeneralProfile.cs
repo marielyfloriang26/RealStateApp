@@ -26,5 +26,8 @@ public class GeneralProfile : Profile
 
         // Mapeo para Agentes
         CreateMap<Usuario, AgenteViewModel>().ForMember(dest => dest.Telefono, opt => opt.MapFrom(src => src.PhoneNumber)).ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.Email)).ForMember(dest => dest.CantidadPropiedades, opt => opt.MapFrom(src => src.Propiedades != null ? src.Propiedades.Count(p => p.Estado == "Disponible") : 0));
+
+        CreateMap<Mensaje, MensajeViewModel>().ReverseMap();
+        CreateMap<Oferta, OfertaViewModel>().ReverseMap();
     }
 }

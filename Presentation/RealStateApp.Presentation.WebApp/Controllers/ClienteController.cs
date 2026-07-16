@@ -18,15 +18,20 @@ public class ClienteController : Controller
     private readonly IPropiedadService _propiedadService;
     private readonly ITipoPropiedadService _tipoPropiedadService;
     private readonly IPropiedadFavoritaService _favoritoService;
+    private readonly IMensajeService _mensajeService;
+    private readonly IOfertaService _ofertaService;
 
     public ClienteController(
         IPropiedadService propiedadService, 
         ITipoPropiedadService tipoPropiedadService, 
-        IPropiedadFavoritaService favoritoService)
+        IPropiedadFavoritaService favoritoService, IMensajeService mensajeService,
+        IOfertaService ofertaService)
     {
         _propiedadService = propiedadService;
         _tipoPropiedadService = tipoPropiedadService;
         _favoritoService = favoritoService;
+        _mensajeService = mensajeService; 
+        _ofertaService = ofertaService;
     }
 
     public async Task<IActionResult> Index(string? searchCode, FiltroPropiedadViewModel filter)
@@ -123,6 +128,71 @@ public class ClienteController : Controller
         }
         return RedirectToAction("Index");
     }
+    public async Task<IActionResult> Details(int id)
+{
+    var propiedad = await _propiedadService.GetByIdWithIncludeAsync(id);
+    if (propiedad == null)
+    {
+        ViewBag.Message = "La propiedad solicitada no existe o no se encuentra disponible.";
+        return View("PropertyNotFound");
+    }
+
+    var clientId = GetLoggedInClientId();
+
+    // Obtener historial de chat
+    ViewBag.ChatHistory = await _mensajeService.GetChatHistoryAsync(clientId, id);
+
+    // Obtener ofertas realizadas por este cliente
+    ViewBag.Ofertas = await _ofertaService.GetOffersByClientAndPropertyAsync(clientId, id);
+
+    // Validaciones de ofertas para la vista
+    ViewBag.HasPendingOffer = await _ofertaService.HasPendingOfferAsync(clientId, id);
+    ViewBag.HasAcceptedOffer = await _ofertaService.HasAcceptedOfferAsync(id);
+
+    return View(propiedad);
+}
+
+[HttpPost]
+public async Task<IActionResult> EnviarMensaje(int propiedadId, int agenteId, string contenido)
+{
+    if (string.IsNullOrWhiteSpace(contenido))
+    {
+        TempData["ErrorMessage"] = "Debe escribir un mensaje antes de enviarlo.";
+        return RedirectToAction("Details", new { id = propiedadId });
+    }
+
+    var clientId = GetLoggedInClientId();
+    await _mensajeService.SendMessageAsync(clientId, agenteId, propiedadId, contenido, "Cliente");
+    return RedirectToAction("Details", new { id = propiedadId });
+}
+
+[HttpPost]
+public async Task<IActionResult> EnviarOferta(int propiedadId, decimal monto)
+{
+    var clientId = GetLoggedInClientId();
+
+    if (monto <= 0)
+    {
+        TempData["ErrorMessage"] = "El monto de la oferta debe ser un valor numérico mayor que cero.";
+        return RedirectToAction("Details", new { id = propiedadId });
+    }
+
+    if (await _ofertaService.HasPendingOfferAsync(clientId, propiedadId))
+    {
+        TempData["ErrorMessage"] = "Ya tiene una oferta pendiente para esta propiedad.";
+        return RedirectToAction("Details", new { id = propiedadId });
+    }
+
+    if (await _ofertaService.HasAcceptedOfferAsync(propiedadId))
+    {
+        TempData["ErrorMessage"] = "Esta propiedad ya tiene una oferta aceptada y no permite nuevas ofertas.";
+        return RedirectToAction("Details", new { id = propiedadId });
+    }
+
+    await _ofertaService.MakeOfferAsync(clientId, propiedadId, monto);
+    TempData["SuccessMessage"] = "Su oferta ha sido enviada correctamente.";
+    return RedirectToAction("Details", new { id = propiedadId });
+}
 
     private int GetLoggedInClientId()
     {
