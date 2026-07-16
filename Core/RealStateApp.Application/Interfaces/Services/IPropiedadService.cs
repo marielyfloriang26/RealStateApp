@@ -1,4 +1,6 @@
+using RealStateApp.Application.Interfaces.Repositories;
 using RealStateApp.Application.ViewModels.Propiedad;
+using RealStateApp.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,4 +13,7 @@ public interface IPropiedadService
     Task<PropiedadViewModel?> GetByCodeWithIncludeAsync(string code);
     Task<List<PropiedadViewModel>> GetAllFilteredAsync(FiltroPropiedadViewModel filter);
     Task<int> CountByStatus(string status);
+    Task<int> CountByAgenteId(int agenteId);
+    Task DeleteAllByAgenteId(int agenteId);
+
 }

@@ -35,4 +35,25 @@ public class PropiedadRepository : RepositoryAsync<Propiedad>, IPropiedadReposit
             .ThenInclude(pm => pm.Mejora)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
+    public async Task DeleteAllRelatedToAgente(int agenteId)
+    {
+        // Buscamos todas las propiedades del agente
+        var propiedades = _dbContext.Propiedades.Where(p => p.AgenteId == agenteId).ToList();
+
+        foreach (var propiedad in propiedades)
+        {
+            // Eliminamos hijos (cumpliendo la integridad de la base de datos)
+            _dbContext.Mensajes.RemoveRange(_dbContext.Mensajes.Where(m => m.PropiedadId == propiedad.Id));
+            _dbContext.Ofertas.RemoveRange(_dbContext.Ofertas.Where(o => o.PropiedadId == propiedad.Id));
+            _dbContext.PropiedadesFavoritas.RemoveRange(_dbContext.PropiedadesFavoritas.Where(pf => pf.PropiedadId == propiedad.Id));
+            _dbContext.ImagenesPropiedad.RemoveRange(_dbContext.ImagenesPropiedad.Where(i => i.PropiedadId == propiedad.Id));
+            _dbContext.PropiedadesMejoras.RemoveRange(_dbContext.PropiedadesMejoras.Where(pm => pm.PropiedadId == propiedad.Id));
+            
+            // Eliminamos la propiedad
+            _dbContext.Propiedades.Remove(propiedad);
+        }
+
+        // Persistimos cambios
+        await _dbContext.SaveChangesAsync();
+    }
 }

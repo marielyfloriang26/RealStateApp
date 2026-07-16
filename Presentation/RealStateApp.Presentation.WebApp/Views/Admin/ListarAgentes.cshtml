@@ -1,0 +1,46 @@
+@model List<RealStateApp.Application.ViewModels.Admin.AgenteViewModel>
+
+<div class="container mt-4">
+    <h2>Gestión de Agentes</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Propiedades</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nombre @item.Apellido</td>
+                    <td>@item.Email</td>
+                    <td>@item.CantidadPropiedades</td>
+                    <td>@(item.EsActivo ? "Activo" : "Inactivo")</td>
+                    <td>
+                        <form asp-action="CambiarEstadoAgente" asp-route-id="@item.Id" method="post" class="d-inline" 
+                              onsubmit="return confirm('¿Está seguro que desea @(item.EsActivo ? "inactivar" : "activar") este agente?');">
+                            <button type="submit" class="btn btn-sm @(item.EsActivo ? "btn-warning" : "btn-success")">
+                                @(item.EsActivo ? "Inactivar" : "Activar")
+                            </button>
+                        </form>
+
+                        <a asp-action="EliminarAgente" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
