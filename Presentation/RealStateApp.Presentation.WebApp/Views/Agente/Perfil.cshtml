@@ -1,0 +1,98 @@
+@model RealStateApp.Application.ViewModels.Propiedad.MiPerfilViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<!-- Toast/Alerta de éxito flotante -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show align-items-center text-white bg-success border-0 rounded-3 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-dark mb-1">Mi Perfil</h2>
+                    <p class="text-muted">Consulta y actualiza tus datos básicos de contacto y foto de perfil.</p>
+                </div>
+
+                <!-- Formulario -->
+                <form asp-action="Perfil" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="FotoUrl" />
+
+                    <!-- Vista previa de foto actual -->
+                    <div class="text-center mb-4">
+                        <div class="position-relative d-inline-block">
+                            @if (!string.IsNullOrEmpty(Model.FotoUrl))
+                            {
+                                <img src="@Model.FotoUrl" class="rounded-circle border border-4 border-light shadow-sm" style="width: 140px; height: 140px; object-fit: cover;" alt="Foto actual" />
+                            }
+                            else
+                            {
+                                <div class="rounded-circle border border-4 border-light shadow-sm bg-light d-flex justify-content-center align-items-center text-muted" style="width: 140px; height: 140px; margin: 0 auto;">
+                                    <i class="bi bi-person-fill fs-1"></i>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-semibold small">Nombre</label>
+                        <input asp-for="Nombre" class="form-control rounded-3 border-2 border-light py-2" placeholder="Ingresa tu nombre" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Apellido -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-semibold small">Apellido</label>
+                        <input asp-for="Apellido" class="form-control rounded-3 border-2 border-light py-2" placeholder="Ingresa tu apellido" />
+                        <span asp-validation-for="Apellido" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-semibold small">Teléfono de Contacto</label>
+                        <input asp-for="Teléfono" class="form-control rounded-3 border-2 border-light py-2" placeholder="Ej. 809-555-1234" />
+                        <span asp-validation-for="Teléfono" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Nueva Foto -->
+                    <div class="mb-4">
+                        <label class="form-label text-secondary fw-semibold small">Cambiar Foto de Perfil (Opcional)</label>
+                        <input asp-for="FotoFile" type="file" class="form-control rounded-3 border-2 border-light py-2" accept=".jpg,.jpeg,.png" />
+                        <span asp-validation-for="FotoFile" class="text-danger small"></span>
+                        <div class="form-text text-muted small mt-1">Formatos permitidos: .jpg, .jpeg, .png. Si no cargas nada, se mantendrá la foto actual.</div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="d-flex gap-2 border-top pt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary w-50 rounded-pill py-2.5 fw-bold">
+                            Volver atrás
+                        </a>
+                        <button type="submit" class="btn btn-primary w-50 rounded-pill py-2.5 fw-bold shadow">
+                            Guardar cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

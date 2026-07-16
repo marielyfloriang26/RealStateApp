@@ -56,4 +56,21 @@ public class AgenteService : IAgenteService
 
         return _mapper.Map<AgenteViewModel>(usuario);
     }
+        public async Task UpdateProfileAsync(int agentId, MiPerfilViewModel vm)
+    {
+        var usuario = await _userManager.FindByIdAsync(agentId.ToString());
+        if (usuario != null)
+        {
+            usuario.Nombre = vm.Nombre;
+            usuario.Apellido = vm.Apellido;
+            usuario.PhoneNumber = vm.Teléfono;
+            
+            if (!string.IsNullOrEmpty(vm.FotoUrl))
+            {
+                usuario.FotoUrl = vm.FotoUrl;
+            }
+
+            await _userManager.UpdateAsync(usuario);
+        }
+    }
 }
