@@ -80,4 +80,13 @@ public class PropiedadService : IPropiedadService
 
         return list;
     }
+    public async Task<int> CountByStatus(string status)
+    {
+        // Asumiendo que tienes acceso a tu repositorio de propiedades
+        // Esto es un ejemplo genérico, adáptalo a tu repositorio:
+        var propiedades = await _propiedadRepository.GetAllAsync(); 
+        return propiedades.Count(p => p.TipoVenta.Nombre == status); 
+        // O si tienes el estado directamente en la entidad:
+        // return propiedades.Count(p => p.Estado == status);
+    }
 }

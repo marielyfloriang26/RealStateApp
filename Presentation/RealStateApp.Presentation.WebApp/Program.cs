@@ -58,6 +58,8 @@ app.MapControllerRoute(
 
 using (var scope = app.Services.CreateScope())
 {
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<Usuario>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
     string[] roles = { "Cliente", "Agente", "Administrador", "Desarrollador" };
 
@@ -66,6 +68,30 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole<int>(role));
+        }
+    }
+
+    // 2. Crear Administrador por defecto (ESTO ES LO QUE DEBES AGREGAR)
+    var adminEmail = "admin@realestateapp.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser == null)
+    {
+        var newAdmin = new Usuario
+        {
+            UserName = "Admin",
+            Email = adminEmail,
+            Nombre = "Administrador",
+            Apellido = "Sistema",
+            TipoUsuario = "Administrador",
+            EmailConfirmed = true,
+            EsActivo = true
+        };
+
+        var result = await userManager.CreateAsync(newAdmin, "Admin123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(newAdmin, "Administrador");
         }
     }
 }

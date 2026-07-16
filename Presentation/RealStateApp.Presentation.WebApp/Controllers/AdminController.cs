@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RealStateApp.Application.Interfaces.Services;
+using RealStateApp.Application.ViewModels.Admin;
+using RealStateApp.Domain.Entities;
 using RealStateApp.Infrastructure.Persistence.Contexts;
 
 namespace RealStateApp.Presentation.WebApp.Controllers;
@@ -8,29 +12,35 @@ namespace RealStateApp.Presentation.WebApp.Controllers;
 [Authorize(Roles = "Administrador")]
 public class AdminController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly UserManager<Usuario> _userManager;
+    private readonly IPropiedadService _propertyService; // Asegúrate de tener este servicio
 
-    public AdminController(ApplicationDbContext context)
+    public AdminController(UserManager<Usuario> userManager, IPropiedadService propertyService)
     {
-        _context = context;
+        _userManager = userManager;
+        _propertyService = propertyService;
     }
 
     public async Task<IActionResult> Index()
     {
-        // Contadores
-        var data = new
+        // Obtener usuarios
+        var users = _userManager.Users.ToList();
+        
+        // Indicadores de Usuarios
+        var viewModel = new AdminDashboardViewModel
         {
-            PropiedadesDisponibles = await _context.Propiedades.CountAsync(p => p.Estado == "Disponible"),
-            PropiedadesVendidas = await _context.Propiedades.CountAsync(p => p.Estado == "Vendida"),
-            AgentesActivos = await _context.Users.CountAsync(u => u.TipoUsuario == "Agente" && u.EsActivo),
-            AgentesInactivos = await _context.Users.CountAsync(u => u.TipoUsuario == "Agente" && !u.EsActivo),
-            ClientesActivos = await _context.Users.CountAsync(u => u.TipoUsuario == "Cliente" && u.EsActivo),
-            ClientesInactivos = await _context.Users.CountAsync(u => u.TipoUsuario == "Cliente" && !u.EsActivo),
-            DesarrolladoresActivos = await _context.Users.CountAsync(u => u.TipoUsuario == "Desarrollador" && u.EsActivo),
-            DesarrolladoresInactivos = await _context.Users.CountAsync(u => u.TipoUsuario == "Desarrollador" && !u.EsActivo)
+            AgentesActivos = users.Count(u => u.TipoUsuario == "Agente" && u.EsActivo),
+            AgentesInactivos = users.Count(u => u.TipoUsuario == "Agente" && !u.EsActivo),
+            ClientesActivos = users.Count(u => u.TipoUsuario == "Cliente" && u.EsActivo),
+            ClientesInactivos = users.Count(u => u.TipoUsuario == "Cliente" && !u.EsActivo),
+            DesarrolladoresActivos = users.Count(u => u.TipoUsuario == "Desarrollador" && u.EsActivo),
+            DesarrolladoresInactivos = users.Count(u => u.TipoUsuario == "Desarrollador" && !u.EsActivo),
+            
+            // Indicadores de Propiedades (Asumiendo que tienes un servicio de propiedades)
+            PropiedadesDisponibles = await _propertyService.CountByStatus("Disponible"),
+            PropiedadesVendidas = await _propertyService.CountByStatus("Vendida")
         };
 
-        ViewBag.DashboardData = data;
-        return View();
+        return View(viewModel);
     }
 }

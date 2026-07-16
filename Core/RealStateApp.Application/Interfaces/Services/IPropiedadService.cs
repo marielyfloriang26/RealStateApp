@@ -10,4 +10,5 @@ public interface IPropiedadService
     Task<PropiedadViewModel?> GetByIdWithIncludeAsync(int id);
     Task<PropiedadViewModel?> GetByCodeWithIncludeAsync(string code);
     Task<List<PropiedadViewModel>> GetAllFilteredAsync(FiltroPropiedadViewModel filter);
+    Task<int> CountByStatus(string status);
 }

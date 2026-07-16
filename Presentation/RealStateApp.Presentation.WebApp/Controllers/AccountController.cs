@@ -44,9 +44,22 @@ public class AccountController : Controller
         // 2. Validar estado (Solo usuarios activos)
         if (!user.EsActivo)
         {
-            ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
+            // Si el usuario es Agente, mostramos el mensaje personalizado
+            if (await _userManager.IsInRoleAsync(user, "Agente"))
+            {
+                ModelState.AddModelError("", "Su cuenta de agente aún no ha sido activada por un administrador.");
+            }
+            else
+            {
+                ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
+            }
             return View(vm);
         }
+        /*if (!user.EsActivo)
+        {
+            ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
+            return View(vm);
+        }*/
 
         // 3. Validar credenciales
 

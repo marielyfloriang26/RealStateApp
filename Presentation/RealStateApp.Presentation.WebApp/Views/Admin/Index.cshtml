@@ -1,23 +1,86 @@
+@model RealStateApp.Application.ViewModels.Admin.AdminDashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard Administrador";
-    var d = ViewBag.DashboardData;
 }
 
-<div class="container-fluid">
-    <h2 class="mb-4">Panel de Administración</h2>
-    
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card bg-success text-white p-3 mb-3">
-                <h5>Propiedades Disponibles</h5>
-                <h2>@d.PropiedadesDisponibles</h2>
+<div class="container mt-4 text-center"> <h2 class="mb-4">Panel de Administración</h2>
+
+    <h4 class="mb-3">Propiedades</h4>
+        <div class="row justify-content-center"> <div class="col-md-3">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">
+                        <h5>Disponibles</h5>
+                        <p class="fs-2 fw-bold">@Model.PropiedadesDisponibles</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-primary text-white mb-4">
+                    <div class="card-body">
+                        <h5>Vendidas</h5>
+                        <p class="fs-2 fw-bold">@Model.PropiedadesVendidas</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-danger text-white p-3 mb-3">
-                <h5>Propiedades Vendidas</h5>
-                <h2>@d.PropiedadesVendidas</h2>
+
+        <h4 class="mb-3">Usuarios</h4>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <div class="card border-info mb-4">
+                    <div class="card-body text-info">
+                        <h5>Agentes Activos</h5>
+                        <p class="fs-2 fw-bold">@Model.AgentesActivos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-secondary mb-4">
+                    <div class="card-body text-secondary">
+                        <h5>Agentes Inactivos</h5>
+                        <p class="fs-2 fw-bold">@Model.AgentesInactivos</p>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <div class="card border-success mb-4">
+                    <div class="card-body text-success">
+                        <h5>Clientes Activos</h5>
+                        <p class="fs-2 fw-bold">@Model.ClientesActivos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-secondary mb-4">
+                    <div class="card-body text-secondary">
+                        <h5>Clientes Inactivos</h5>
+                        <p class="fs-2 fw-bold">@Model.ClientesInactivos</p>
+                    </div>
+                </div>
+            </div>
         </div>
-</div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <div class="card border-warning mb-4">
+                    <div class="card-body text-warning">
+                        <h5>Desarrolladores Activos</h5>
+                        <p class="fs-2 fw-bold">@Model.DesarrolladoresActivos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-secondary mb-4">
+                    <div class="card-body text-secondary">
+                        <h5>Desarrolladores Inactivos</h5>
+                        <p class="fs-2 fw-bold">@Model.DesarrolladoresInactivos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
