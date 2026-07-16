@@ -1,5 +1,6 @@
 using AutoMapper;
 using RealStateApp.Application.ViewModels.Propiedad;
+using RealStateApp.Application.ViewModels.TipoPropiedades;
 using RealStateApp.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;

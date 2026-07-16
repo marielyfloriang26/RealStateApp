@@ -1,0 +1,120 @@
+@using RealStateApp.Application.ViewModels.Propiedad
+@model List<PropiedadViewModel>
+@{
+    ViewData["Title"] = "Mis Propiedades Favoritas";
+}
+
+<!-- Toast/Alerta de exito flotante -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show align-items-center text-white bg-success border-0 rounded-3 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="container my-4">
+    <div class="mb-5">
+        <h1 class="fw-bold text-dark mb-1">Mis Propiedades Favoritas</h1>
+        <p class="text-muted">Visualiza las propiedades que guardaste como favoritas. Solo se muestran las que sigan disponibles.</p>
+    </div>
+
+    <!-- Grid de favoritas -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var propiedad in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-hover-sm rounded-4 overflow-hidden bg-white">
+                    <div class="position-relative card-img-wrapper" style="height: 200px;">
+                        @if (propiedad.ImagenesUrl != null && propiedad.ImagenesUrl.Count > 0)
+                        {
+                            <img src="@propiedad.ImagenesUrl[0]" class="w-100 h-100 object-fit-cover" alt="Propiedad" />
+                        }
+                        else
+                        {
+                            <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center bg-light text-muted">
+                                <i class="bi bi-house-door fs-1 mb-2"></i>
+                                <span class="small">Sin Imagen</span>
+                            </div>
+                        }
+                        
+                        <!-- Botón flotante para eliminar de favoritos directamente -->
+                        <div class="position-absolute top-0 end-0 m-3" style="z-index: 5;">
+                            <form asp-action="EliminarFavorito" method="post">
+                                <input type="hidden" name="id" value="@propiedad.Id" />
+                                <input type="hidden" name="redirectToAction" value="MisPropiedades" />
+                                <button type="submit" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center p-2.5 transition" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-heart-fill text-danger fs-5"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="position-absolute top-0 start-0 m-3 d-flex flex-column gap-1-5">
+                            <span class="badge bg-primary text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
+                                @propiedad.TipoPropiedadNombre
+                            </span>
+                            <span class="badge bg-success text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
+                                @propiedad.TipoVentaNombre
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted small fw-semibold">Código: @propiedad.Codigo</span>
+                            <span class="text-primary fw-bold fs-5">RD$ @propiedad.Precio.ToString("N2")</span>
+                        </div>
+
+                        <p class="card-text text-muted small text-truncate-2 mb-3">
+                            @propiedad.Descripcion
+                        </p>
+
+                        <div class="row row-cols-3 g-2 text-center border-top pt-3 mt-auto">
+                            <div class="col">
+                                <div class="p-1 rounded bg-light">
+                                    <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Habs</div>
+                                    <div class="fw-bold text-dark">@propiedad.CantidadHabitaciones</div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-1 rounded bg-light">
+                                    <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Baños</div>
+                                    <div class="fw-bold text-dark">@propiedad.CantidadBanos</div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-1 rounded bg-light">
+                                    <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Mts²</div>
+                                    <div class="fw-bold text-dark">@propiedad.TamanoMetros.ToString("N0")</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+                        <a asp-action="Details" asp-controller="Home" asp-route-id="@propiedad.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold shadow-sm">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="text-center py-5">
+            <div class="text-muted mb-3">
+                <i class="bi bi-heart fs-1"></i>
+            </div>
+            <h4 class="fw-bold">No tienes propiedades favoritas guardadas</h4>
+            <p class="text-muted">Cuando veas propiedades disponibles que te interesen, haz clic en el corazón para guardarlas aquí.</p>
+        </div>
+    }
+</div>

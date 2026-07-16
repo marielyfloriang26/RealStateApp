@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace RealStateApp.Presentation.WebApp.Controllers;
 
 
-[Authorize(Roles = "Cliente")] // Protege el controlador para que solo entren Agentes //AGENTE, TEMPORAL
+[Authorize(Roles = "Agente")] // Protege el controlador para que solo entren Agentes //AGENTE, TEMPORAL
 
 public class AgenteController : Controller
 {

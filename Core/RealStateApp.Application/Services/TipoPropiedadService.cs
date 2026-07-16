@@ -36,10 +36,10 @@ public class TipoPropiedadService : GenericService<SaveTipoPropiedadViewModel, T
         }).ToList();
     }
 
-    public async Task<List<RealStateApp.Application.ViewModels.Propiedad.TipoPropiedadViewModel>> GetAllAsync()
+    public async Task<List<TipoPropiedadViewModel>> GetAllAsync()
     {
         var list = await _tipoPropiedadRepository.GetAllAsync();
-        return _mapper.Map<List<RealStateApp.Application.ViewModels.Propiedad.TipoPropiedadViewModel>>(list);
+        return _mapper.Map<List<TipoPropiedadViewModel>>(list);
     }
 
     public override async Task Delete(int id)

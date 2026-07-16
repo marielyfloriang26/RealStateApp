@@ -1,19 +1,34 @@
-﻿@using RealStateApp.Application.ViewModels.Propiedad
+@using RealStateApp.Application.ViewModels.Propiedad
 @using RealStateApp.Application.ViewModels.TipoPropiedades
 @model List<PropiedadViewModel>
 @{
-    ViewData["Title"] = "Listado de Propiedades";
+    ViewData["Title"] = "Home Cliente";
     var filter = ViewBag.Filter as FiltroPropiedadViewModel ?? new FiltroPropiedadViewModel();
     var tiposPropiedad = ViewBag.TiposPropiedad as List<TipoPropiedadViewModel> ?? new List<TipoPropiedadViewModel>();
+    var favoritosIds = ViewBag.Favoritos as List<int> ?? new List<int>();
     var searchCode = ViewBag.SearchCode as string;
     var errorMessage = ViewBag.ErrorMessage as string;
 }
 
+<!-- Toast/Alerta de exito flotante -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show align-items-center text-white bg-success border-0 rounded-3 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
 
 <div class="hero-section text-center text-white py-5 px-4 mb-5 rounded-4 shadow-lg">
     <div class="py-3">
-        <h1 class="display-4 fw-bold mb-3">Encuentra tu hogar ideal</h1>
-        <p class="lead mb-4 opacity-75">Busca entre las mejores propiedades y proyectos inmobiliarios</p>
+        <h1 class="display-4 fw-bold mb-3">Busca tu próximo destino</h1>
+        <p class="lead mb-4 opacity-75">Visualiza propiedades y guarda tus favoritas.</p>
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 <form asp-action="Index" method="get" class="d-flex shadow-sm bg-white p-2 rounded-pill">
@@ -28,7 +43,7 @@
 </div>
 
 <div class="row">
-    <!-- Sidebar filtros -->
+    <!-- Sidebar Filtros -->
     <div class="col-lg-3 mb-4">
         <div class="card border-0 shadow-sm p-4 sticky-top glass-card rounded-4" style="top: 2rem;">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -40,7 +55,6 @@
             </div>
             
             <form asp-action="Index" method="get">
-                <!-- Tipo Propiedad -->
                 <div class="mb-3">
                     <label class="form-label text-secondary fw-semibold small">Tipo de Propiedad</label>
                     <select name="TipoPropiedadId" class="form-select rounded-3 border-2 border-light py-2">
@@ -52,7 +66,6 @@
                     </select>
                 </div>
 
-                <!-- Rango Precio -->
                 <div class="mb-3">
                     <label class="form-label text-secondary fw-semibold small">Precio Mínimo (DOP)</label>
                     <input type="number" name="PrecioMinimo" value="@filter.PrecioMinimo" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Ej. 100000" />
@@ -63,13 +76,11 @@
                     <input type="number" name="PrecioMaximo" value="@filter.PrecioMaximo" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Ej. 5000000" />
                 </div>
 
-                <!-- Habitaciones -->
                 <div class="mb-3">
                     <label class="form-label text-secondary fw-semibold small">Habitaciones</label>
                     <input type="number" name="CantidadHabitaciones" value="@filter.CantidadHabitaciones" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Cantidad de habitaciones" />
                 </div>
 
-                <!-- Baños -->
                 <div class="mb-4">
                     <label class="form-label text-secondary fw-semibold small">Baños</label>
                     <input type="number" name="CantidadBanos" value="@filter.CantidadBanos" min="0" class="form-control rounded-3 border-2 border-light py-2" placeholder="Cantidad de baños" />
@@ -80,15 +91,13 @@
         </div>
     </div>
 
-    <!-- Properties Grid -->
+    <!-- Grid de Propiedades -->
     <div class="col-lg-9">
         @if (!string.IsNullOrEmpty(errorMessage))
         {
             <div class="alert alert-warning border-0 shadow-sm p-4 rounded-4 mb-4" role="alert">
                 <div class="d-flex align-items-center">
-                    <div class="fs-1 text-warning me-3">
-                        <i class="bi bi-exclamation-circle-fill"></i>
-                    </div>
+                    <i class="bi bi-exclamation-circle-fill fs-2 text-warning me-3"></i>
                     <div>
                         <h5 class="alert-heading fw-bold mb-1">Sin resultados</h5>
                         <p class="mb-0 text-secondary">@errorMessage</p>
@@ -100,13 +109,13 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
             @foreach (var propiedad in Model)
             {
+                var isFavorite = favoritosIds.Contains(propiedad.Id);
                 <div class="col">
                     <div class="card h-100 border-0 shadow-hover-sm rounded-4 overflow-hidden bg-white">
-                        <!-- Card Image -->
                         <div class="position-relative card-img-wrapper" style="height: 200px;">
                             @if (propiedad.ImagenesUrl != null && propiedad.ImagenesUrl.Count > 0)
                             {
-                                <img src="@propiedad.ImagenesUrl[0]" class="w-100 h-100 object-fit-cover" alt="Imagen principal" />
+                                <img src="@propiedad.ImagenesUrl[0]" class="w-100 h-100 object-fit-cover" alt="Propiedad" />
                             }
                             else
                             {
@@ -116,7 +125,16 @@
                                 </div>
                             }
                             
-                            <!-- Badges over image -->
+                            <!-- Botón Flotante de Corazon (Favoritos) -->
+                            <div class="position-absolute top-0 end-0 m-3" style="z-index: 5;">
+                                <form asp-action="@(isFavorite ? "EliminarFavorito" : "AgregarFavorito")" method="post">
+                                    <input type="hidden" name="id" value="@propiedad.Id" />
+                                    <button type="submit" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center p-2.5 transition" style="width: 40px; height: 40px;">
+                                        <i class="bi @(isFavorite ? "bi-heart-fill text-danger" : "bi-heart text-secondary") fs-5"></i>
+                                    </button>
+                                </form>
+                            </div>
+
                             <div class="position-absolute top-0 start-0 m-3 d-flex flex-column gap-1-5">
                                 <span class="badge bg-primary text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
                                     @propiedad.TipoPropiedadNombre
@@ -127,7 +145,6 @@
                             </div>
                         </div>
 
-                        <!-- Card Body -->
                         <div class="card-body p-4 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="text-muted small fw-semibold">Código: @propiedad.Codigo</span>
@@ -138,7 +155,6 @@
                                 @propiedad.Descripcion
                             </p>
 
-                            <!-- Features List -->
                             <div class="row row-cols-3 g-2 text-center border-top pt-3 mt-auto">
                                 <div class="col">
                                     <div class="p-1 rounded bg-light">
@@ -161,9 +177,9 @@
                             </div>
                         </div>
 
-                        <!-- Card Footer -->
+                        <!-- Boton Ver Detalles -->
                         <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-                            <a asp-action="Details" asp-route-id="@propiedad.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold shadow-sm transition">
+                            <a asp-action="Details" asp-controller="Home" asp-route-id="@propiedad.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold shadow-sm transition">
                                 Ver Detalles
                             </a>
                         </div>
@@ -179,7 +195,7 @@
                     <i class="bi bi-houses fs-1"></i>
                 </div>
                 <h4 class="fw-bold">No hay propiedades registradas</h4>
-                <p class="text-muted">Actualmente no existen propiedades en estado disponible en el sistema.</p>
+                <p class="text-muted">Actualmente no existen propiedades disponibles.</p>
             </div>
         }
     </div>
