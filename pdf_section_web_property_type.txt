@@ -1,0 +1,622 @@
+--- PAGE 76 ---
+ 
+●  Después  de  crear,  editar,  activar  o  inactivar  un  desarrollador,  el  sistema  debe  
+redirigir
+ 
+al
+ 
+listado
+ 
+del
+ 
+mantenimiento
+ 
+de
+ 
+desarrolladores.
+ 
+Mantenimiento  de  tipo  de  propiedades  
+Al  ingresar  a  la  opción  Mantenimiento  de  tipo  de  propiedades  desde  el  menú  
+principal
+ 
+del
+ 
+administrador,
+ 
+el
+ 
+sistema
+ 
+debe
+ 
+redirigir
+ 
+al
+ 
+usuario
+ 
+a
+ 
+una
+ 
+pantalla
+ 
+donde
+ 
+pueda
+ 
+gestionar
+ 
+los
+ 
+tipos
+ 
+de
+ 
+propiedades
+ 
+disponibles
+ 
+en
+ 
+la
+ 
+aplicación.
+ 
+Este  mantenimiento  debe  permitir  consultar,  crear,  editar  y  eliminar  los  tipos  de  
+propiedades
+ 
+que
+ 
+podrán
+ 
+ser
+ 
+utilizados
+ 
+por
+ 
+los
+ 
+agentes
+ 
+al
+ 
+registrar
+ 
+propiedades
+ 
+inmobiliarias.
+ 
+Ejemplos  de  tipos  de  propiedades:  
+●  Casa  ●  Apartamento  ●  Villa  ●  Solar  ●  Local  comercial  
+Pantalla  inicial  del  mantenimiento  
+La  pantalla  inicial  del  mantenimiento  debe  mostrar  un  listado  con  todos  los  tipos  de  
+propiedades
+ 
+registrados
+ 
+en
+ 
+el
+ 
+sistema.
+ 
+De  cada  tipo  de  propiedad  se  debe  mostrar  la  siguiente  información:
+ 
+Campo
+ 
+Descripción
+ 
+Nombre  del  tipo  de  propiedad
+ 
+Nombre  que  identiﬁca  el  tipo  de  propiedad.
+ 
+Descripción
+ 
+Descripción  general  del  tipo  de  propiedad.
+ 
+Cantidad  de  propiedades  asociadas
+ 
+Cantidad  total  de  propiedades  que  tienen  asignado  ese  tipo  de  propiedad.
+ 
+Cada  tipo  de  propiedad  listado  debe  tener  las  siguientes  acciones:
+ 
+--- PAGE 77 ---
+ 
+Acción
+ 
+Descripción
+ 
+Editar
+ 
+Permite  modiﬁcar  los  datos  del  tipo  de  propiedad  seleccionado.
+ 
+Eliminar
+ 
+Permite  eliminar  el  tipo  de  propiedad  seleccionado  junto  con  las  propiedades  asociadas.
+ 
+En  la  parte  superior  del  listado  debe  existir  un  botón  con  el  texto  Crear  tipo  de  
+propiedad
+.
+ 
+Si  no  existen  tipos  de  propiedades  registrados,  el  sistema  debe  mostrar  un  mensaje  
+como:
+ 
+“No  existen  tipos  de  propiedades  registrados.”  
+Crear  tipo  de  propiedad  
+Al  hacer  clic  sobre  el  botón  Crear  tipo  de  propiedad ,  el  sistema  debe  redirigir  al  
+administrador
+ 
+a
+ 
+una
+ 
+pantalla
+ 
+nueva
+ 
+o
+ 
+mostrar
+ 
+un
+ 
+modal
+ 
+con
+ 
+un
+ 
+formulario
+ 
+para
+ 
+registrar
+ 
+un
+ 
+nuevo
+ 
+tipo
+ 
+de
+ 
+propiedad.
+ 
+El  formulario  debe  contener  los  siguientes  campos:  
+ 
+Campo
+ 
+Tipo  de  dato
+ 
+Requerido
+ 
+Descripción
+ 
+Nombre  del  tipo  de  propiedad
+ 
+Texto  /  string
+ 
+Sí
+ 
+Nombre  que  identiﬁcará  el  tipo  de  propiedad  dentro  del  sistema.
+ 
+Descripción
+ 
+Texto  /  string
+ 
+Sí
+ 
+Descripción  general  del  tipo  de  propiedad.
+ 
+Al  ﬁnal  del  formulario  deben  existir  dos  botones:
+ 
+Botón
+ 
+Descripción
+ 
+Volver  atrás
+ 
+Devuelve  al  administrador  a  la  pantalla  inicial  del  mantenimiento  sin  crear  el  registro.
+ 
+--- PAGE 78 ---
+ 
+Botón
+ 
+Descripción
+ 
+Crear  tipo  de  propiedad
+ 
+Envía  la  información  del  formulario  y  registra  el  nuevo  tipo  de  propiedad.
+ 
+Validaciones  para  crear  tipo  de  propiedad  
+El  formulario  de  creación  debe  cumplir  las  siguientes  validaciones:  
+●  El  nombre  del  tipo  de  propiedad  es  requerido.  ●  La  descripción  es  requerida.  ●  El  nombre  del  tipo  de  propiedad  no  debe  estar  registrado  previamente.  ●  El  nombre  del  tipo  de  propiedad  no  debe  guardarse  vacío  ni  solo  con  
+espacios
+ 
+en
+ 
+blanco.
+ 
+Si  el  administrador  intenta  crear  un  tipo  de  propiedad  sin  completar  los  campos  
+requeridos,
+ 
+el
+ 
+sistema
+ 
+debe
+ 
+mostrar
+ 
+un
+ 
+mensaje
+ 
+como:
+ 
+“Debe  completar  todos  los  campos  requeridos.”  
+Si  ya  existe  un  tipo  de  propiedad  con  el  mismo  nombre,  el  sistema  debe  mostrar  un  
+mensaje
+ 
+como:
+ 
+“Ya  existe  un  tipo  de  propiedad  registrado  con  este  nombre.”  
+Una  vez  creado  correctamente  el  tipo  de  propiedad,  el  sistema  debe  redirigir  al  
+administrador
+ 
+a
+ 
+la
+ 
+pantalla
+ 
+inicial
+ 
+del
+ 
+mantenimiento
+ 
+y
+ 
+mostrar
+ 
+un
+ 
+mensaje
+ 
+como:
+ 
+“El  tipo  de  propiedad  fue  creado  correctamente.”  
+Editar  tipo  de  propiedad  
+Desde  el  listado  de  tipos  de  propiedades,  cada  registro  debe  tener  un  botón  Editar .  
+Al  hacer  clic  sobre  este  botón,  el  sistema  debe  redirigir  al  administrador  a  una  
+pantalla
+ 
+nueva
+ 
+o
+ 
+mostrar
+ 
+un
+ 
+modal
+ 
+con
+ 
+un
+ 
+formulario
+ 
+cargado
+ 
+con
+ 
+los
+ 
+datos
+ 
+actuales
+ 
+del
+ 
+tipo
+ 
+de
+ 
+propiedad
+ 
+seleccionado.
+ 
+El  formulario  de  edición  debe  contener  los  siguientes  campos:
+ 
+--- PAGE 79 ---
+ 
+Campo
+ 
+Tipo  de  dato
+ 
+Requerido
+ 
+Descripción
+ 
+Nombre  del  tipo  de  propiedad
+ 
+Texto  /  string
+ 
+Sí
+ 
+Nombre  que  identiﬁca  el  tipo  de  propiedad  dentro  del  sistema.
+ 
+Descripción
+ 
+Texto  /  string
+ 
+Sí
+ 
+Descripción  general  del  tipo  de  propiedad.
+ 
+Los  campos  deben  mostrarse  con  los  valores  actualmente  guardados  para  el  tipo  de  
+propiedad
+ 
+que
+ 
+se
+ 
+está
+ 
+editando.
+ 
+Al  ﬁnal  del  formulario  deben  existir  dos  botones:
+ 
+Botón
+ 
+Descripción
+ 
+Volver  atrás
+ 
+Devuelve  al  administrador  a  la  pantalla  inicial  del  mantenimiento  sin  guardar  cambios.
+ 
+Guardar  cambios
+ 
+Actualiza  la  información  del  tipo  de  propiedad  seleccionado.
+ 
+Validaciones  para  editar  tipo  de  propiedad  
+El  formulario  de  edición  debe  cumplir  las  siguientes  validaciones:  
+●  El  tipo  de  propiedad  seleccionado  debe  existir.  ●  El  nombre  del  tipo  de  propiedad  es  requerido.  ●  La  descripción  es  requerida.  ●  El  nombre  del  tipo  de  propiedad  no  debe  estar  registrado  por  otro  tipo  de  
+propiedad.
+ ●  El  nombre  del  tipo  de  propiedad  no  debe  guardarse  vacío  ni  solo  con  
+espacios
+ 
+en
+ 
+blanco.
+ 
+Si  el  administrador  intenta  guardar  el  formulario  sin  completar  los  campos  
+requeridos,
+ 
+el
+ 
+sistema
+ 
+debe
+ 
+mostrar
+ 
+un
+ 
+mensaje
+ 
+como:
+ 
+“Debe  completar  todos  los  campos  requeridos.”  
+Si  ya  existe  otro  tipo  de  propiedad  con  el  mismo  nombre,  el  sistema  debe  mostrar  
+--- PAGE 80 ---
+ 
+un  mensaje  como:  
+“Ya  existe  otro  tipo  de  propiedad  registrado  con  este  nombre.”  
+Una  vez  actualizado  correctamente  el  tipo  de  propiedad,  el  sistema  debe  redirigir  al  
+administrador
+ 
+a
+ 
+la
+ 
+pantalla
+ 
+inicial
+ 
+del
+ 
+mantenimiento
+ 
+y
+ 
+mostrar
+ 
+un
+ 
+mensaje
+ 
+como:
+ 
+“El  tipo  de  propiedad  fue  actualizado  correctamente.”  
+Eliminar  tipo  de  propiedad  
+Desde  el  listado  de  tipos  de  propiedades,  cada  registro  debe  tener  un  botón  
+Eliminar
+.
+ 
+Al  hacer  clic  sobre  este  botón,  el  sistema  debe  redirigir  al  administrador  a  una  
+pantalla
+ 
+de
+ 
+conﬁrmación.
+ 
+La  pantalla  debe  mostrar  el  siguiente  mensaje:  
+“¿Está  seguro  que  desea  eliminar  este  tipo  de  propiedad  y  todas  las  
+propiedades
+ 
+asociadas?”
+ 
+Debajo  del  mensaje  deben  existir  dos  botones:
+ 
+Botón
+ 
+Descripción
+ 
+Cancelar
+ 
+Cancela  la  eliminación  y  devuelve  al  administrador  al  listado  de  tipos  de  propiedades.
+ 
+Aceptar
+ 
+Conﬁrma  la  eliminación  del  tipo  de  propiedad  seleccionado  y  sus  propiedades  asociadas.
+ 
+Si  el  administrador  presiona  Cancelar ,  el  sistema  debe  regresar  a  la  pantalla  inicial  
+del
+ 
+mantenimiento
+ 
+sin
+ 
+realizar
+ 
+ningún
+ 
+cambio.
+ 
+Si  el  administrador  presiona  Aceptar ,  el  sistema  debe  eliminar  el  tipo  de  propiedad  
+seleccionado
+ 
+y
+ 
+todas
+ 
+las
+ 
+propiedades
+ 
+que
+ 
+tengan
+ 
+asignado
+ 
+ese
+ 
+tipo
+ 
+de
+ 
+propiedad.
+ 
+Luego  de  completar  la  eliminación,  el  sistema  debe  redirigir  al  administrador  a  la  
+pantalla
+ 
+inicial
+ 
+del
+ 
+mantenimiento
+ 
+de
+ 
+tipo
+ 
+de
+ 
+propiedades.
+ 
+ 
+--- PAGE 81 ---
+ 
+Consideraciones  al  eliminar  un  tipo  de  propiedad  
+Al  eliminar  un  tipo  de  propiedad,  el  sistema  debe  gestionar  correctamente  toda  la  
+información
+ 
+relacionada
+ 
+con
+ 
+las
+ 
+propiedades
+ 
+asociadas
+ 
+a
+ 
+ese
+ 
+tipo.
+ 
+La  eliminación  debe  incluir  o  gestionar  correctamente  los  siguientes  datos:  
+●   
+Elemento
+ 
+Descripción
+ 
+Propiedades
+ 
+El  sistema  debe  eliminar  las  propiedades  asociadas  a  este  tipo  para  evitar  datos  huérfanos.
+ 
+Imágenes
+ 
+Deben  eliminarse  los  archivos  de  imagen  vinculados  a  las  propiedades  afectadas.
+ 
+Mejoras
+ 
+Se  deben  gestionar  las  mejoras  relacionadas  para  mantener  la  integridad  de  la  base  de  datos.
+ 
+Ofertas
+ 
+El  sistema  debe  remover  las  ofertas  realizadas  sobre  las  propiedades  que  serán  eliminadas.
+ 
+Conversaciones
+ 
+Los  mensajes  y  chats  vinculados  a  estas  propiedades  deben  gestionarse  para  evitar  inconsistencias.
+ 
+Favoritos
+ 
+Deben  eliminarse  las  marcas  de  favoritos  de  los  clientes  asociadas  a  las  propiedades  eliminadas.
+ 
+La  eliminación  debe  ejecutarse  de  forma  completa  para  evitar  datos  huérfanos  o  
+inconsistencias
+ 
+en
+ 
+la
+ 
+base
+ 
+de
+ 
+datos.
+ 
+Validaciones  para  eliminar  tipo  de  propiedad  
+Antes  de  eliminar  un  tipo  de  propiedad,  el  sistema  debe  cumplir  las  siguientes  
+validaciones:
+ 
+●  El  usuario  autenticado  debe  tener  rol  Administrador .  ●  El  tipo  de  propiedad  seleccionado  debe  existir.  ●  El  sistema  debe  solicitar  conﬁrmación  antes  de  ejecutar  la  eliminación.  ●  Si  el  tipo  de  propiedad  tiene  propiedades  asociadas,  también  deben  
+eliminarse
+ 
+o
+ 
+gestionar
+ 
+correctamente
+ 
+dichas
+ 
+propiedades
+ 
+y
+ 
+sus
+ 
+datos
+ 
+--- PAGE 82 ---

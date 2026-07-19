@@ -5,64 +5,90 @@
 }
 
 <div class="container mt-4">
-    <div class="row mb-3">
+    <div class="row align-items-center mb-4">
         <div class="col-md-8">
-            <h2>Mantenimiento de tipo de propiedades</h2>
+            <h2 class="fw-bold text-dark mb-1">Mantenimiento de tipo de propiedades</h2>
+            <p class="text-muted mb-0">Gestiona los diferentes tipos de propiedades que estarán disponibles para los agentes.</p>
         </div>
-        <div class="col-md-4 text-end">
-            <a asp-action="Create" class="btn btn-primary">Crear tipo de propiedad</a>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a asp-action="Create" class="btn btn-gradient rounded-pill px-4 py-2.5 fw-semibold shadow-sm">
+                <i class="bi bi-plus-circle-fill me-2"></i>Crear tipo de propiedad
+            </a>
         </div>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
+        <div class="alert alert-success border-0 shadow-sm p-3 rounded-4 mb-4 alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill fs-4 text-success me-3"></i>
+                <div>@TempData["SuccessMessage"]</div>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["ErrorMessage"]
+        <div class="alert alert-danger border-0 shadow-sm p-3 rounded-4 mb-4 alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-4 text-danger me-3"></i>
+                <div>@TempData["ErrorMessage"]</div>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (!Model.Any())
     {
-        <div class="alert alert-info">
-            No existen tipos de propiedades registrados.
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+            <div class="text-muted mb-3">
+                <i class="bi bi-folder-x fs-1"></i>
+            </div>
+            <h4 class="fw-bold text-dark">No existen tipos de propiedades registrados.</h4>
+            <p class="text-muted mb-0">Comienza haciendo clic en el botón de arriba para registrar el primer tipo de propiedad.</p>
         </div>
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Nombre del tipo de propiedad</th>
-                        <th>Descripción</th>
-                        <th>Cantidad de propiedades asociadas</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark-gradient text-white border-0" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
                         <tr>
-                            <td>@item.Nombre</td>
-                            <td>@item.Descripcion</td>
-                            <td>@item.CantidadPropiedadesAsociadas</td>
-                            <td class="text-center">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">Editar</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
-                            </td>
+                            <th class="ps-4 py-3 fw-semibold">Nombre del tipo de propiedad</th>
+                            <th class="py-3 fw-semibold">Descripción</th>
+                            <th class="py-3 fw-semibold text-center">Cantidad de propiedades asociadas</th>
+                            <th class="pe-4 py-3 fw-semibold text-center" style="width: 180px;">Acciones</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark py-3">@item.Nombre</td>
+                                <td class="text-secondary py-3">@item.Descripcion</td>
+                                <td class="text-center py-3">
+                                    <span class="badge bg-light text-primary rounded-pill px-3 py-1.5 fw-bold border border-primary-subtle fs-7">
+                                        @item.CantidadPropiedadesAsociadas
+                                    </span>
+                                </td>
+                                <td class="pe-4 py-3 text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold transition">
+                                            <i class="bi bi-pencil-square me-1"></i>Editar
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 fw-semibold transition">
+                                            <i class="bi bi-trash-fill me-1"></i>Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 </div>
+
