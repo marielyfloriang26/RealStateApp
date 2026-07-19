@@ -30,8 +30,15 @@ public class TipoPropiedadController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(SaveTipoPropiedadViewModel vm)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
         {
+            if (string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
+            {
+                if (!ModelState.ContainsKey("Nombre") && !ModelState.ContainsKey("Descripcion"))
+                {
+                    ModelState.AddModelError("", "Debe completar todos los campos requeridos.");
+                }
+            }
             return View(vm);
         }
 
@@ -60,9 +67,23 @@ public class TipoPropiedadController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(SaveTipoPropiedadViewModel vm)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
         {
+            if (string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
+            {
+                if (!ModelState.ContainsKey("Nombre") && !ModelState.ContainsKey("Descripcion"))
+                {
+                    ModelState.AddModelError("", "Debe completar todos los campos requeridos.");
+                }
+            }
             return View(vm);
+        }
+
+        var existing = await _tipoPropiedadService.GetByIdSaveViewModel(vm.Id);
+        if (existing == null)
+        {
+            TempData["ErrorMessage"] = "El tipo de propiedad seleccionado no existe.";
+            return RedirectToAction("Index");
         }
 
         var tipos = await _tipoPropiedadService.GetAllViewModel();

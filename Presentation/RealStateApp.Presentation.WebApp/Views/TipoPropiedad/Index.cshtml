@@ -4,49 +4,62 @@
     ViewData["Title"] = "Mantenimiento de tipo de propiedades";
 }
 
-<div class="container mt-4">
-    <div class="row align-items-center mb-4">
-        <div class="col-md-8">
-            <h2 class="fw-bold text-dark mb-1">Mantenimiento de tipo de propiedades</h2>
-            <p class="text-muted mb-0">Gestiona los diferentes tipos de propiedades que estarán disponibles para los agentes.</p>
-        </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <a asp-action="Create" class="btn btn-gradient rounded-pill px-4 py-2.5 fw-semibold shadow-sm">
-                <i class="bi bi-plus-circle-fill me-2"></i>Crear tipo de propiedad
-            </a>
+<div class="container my-4">
+    <!-- Header Card -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+            <div class="mb-3 mb-md-0">
+                <span class="badge bg-primary text-white rounded-pill px-3 py-1 fw-bold small mb-2 shadow-sm">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Módulo de Administrador
+                </span>
+                <h2 class="fw-bold text-dark mb-1">Mantenimiento de tipo de propiedades</h2>
+                <p class="text-muted mb-0">Gestiona los diferentes tipos de propiedades que estarán disponibles para los agentes.</p>
+            </div>
+            <div class="mt-2 mt-md-0">
+                <a asp-action="Create" class="btn btn-gradient rounded-pill px-4 py-2.5 fw-semibold shadow-sm d-inline-flex align-items-center">
+                    <i class="bi bi-plus-circle-fill me-2 fs-5"></i>Crear tipo de propiedad
+                </a>
+            </div>
         </div>
     </div>
 
+    <!-- Alertas de Éxito y Error -->
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success border-0 shadow-sm p-3 rounded-4 mb-4 alert-dismissible fade show" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill fs-4 text-success me-3"></i>
-                <div>@TempData["SuccessMessage"]</div>
+        <div class="alert alert-success border-0 shadow-sm p-3 rounded-4 mb-4 alert-dismissible fade show d-flex align-items-center" role="alert">
+            <div class="bg-success-subtle text-success p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-check-circle-fill fs-4"></i>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="fw-medium text-dark">@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger border-0 shadow-sm p-3 rounded-4 mb-4 alert-dismissible fade show" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-exclamation-triangle-fill fs-4 text-danger me-3"></i>
-                <div>@TempData["ErrorMessage"]</div>
+        <div class="alert alert-danger border-0 shadow-sm p-3 rounded-4 mb-4 alert-dismissible fade show d-flex align-items-center" role="alert">
+            <div class="bg-danger-subtle text-danger p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-exclamation-triangle-fill fs-4"></i>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="fw-medium text-dark">@TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
+    <!-- Contenido Principal -->
     @if (!Model.Any())
     {
-        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
-            <div class="text-muted mb-3">
-                <i class="bi bi-folder-x fs-1"></i>
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-3">
+            <div class="py-4">
+                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center text-primary mb-3 shadow-sm" style="width: 80px; height: 80px;">
+                    <i class="bi bi-folder-x fs-1"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">No existen tipos de propiedades registrados.</h4>
+                <p class="text-muted mb-4 max-w-md mx-auto">Haz clic en el botón superior para registrar el primer tipo de propiedad en el catálogo del sistema.</p>
+                <a asp-action="Create" class="btn btn-gradient rounded-pill px-4 py-2.5 fw-semibold shadow-sm">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Crear tipo de propiedad
+                </a>
             </div>
-            <h4 class="fw-bold text-dark">No existen tipos de propiedades registrados.</h4>
-            <p class="text-muted mb-0">Comienza haciendo clic en el botón de arriba para registrar el primer tipo de propiedad.</p>
         </div>
     }
     else
@@ -54,31 +67,38 @@
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark-gradient text-white border-0" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
-                        <tr>
-                            <th class="ps-4 py-3 fw-semibold">Nombre del tipo de propiedad</th>
-                            <th class="py-3 fw-semibold">Descripción</th>
-                            <th class="py-3 fw-semibold text-center">Cantidad de propiedades asociadas</th>
-                            <th class="pe-4 py-3 fw-semibold text-center" style="width: 180px;">Acciones</th>
+                    <thead>
+                        <tr class="bg-dark-gradient text-white border-0">
+                            <th class="bg-transparent text-white ps-4 py-3.5 fw-semibold">Nombre del tipo de propiedad</th>
+                            <th class="bg-transparent text-white py-3.5 fw-semibold">Descripción</th>
+                            <th class="bg-transparent text-white py-3.5 fw-semibold text-center">Cantidad de propiedades asociadas</th>
+                            <th class="bg-transparent text-white pe-4 py-3.5 fw-semibold text-center" style="width: 220px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="border-top-0">
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td class="ps-4 fw-bold text-dark py-3">@item.Nombre</td>
-                                <td class="text-secondary py-3">@item.Descripcion</td>
-                                <td class="text-center py-3">
-                                    <span class="badge bg-light text-primary rounded-pill px-3 py-1.5 fw-bold border border-primary-subtle fs-7">
-                                        @item.CantidadPropiedadesAsociadas
+                            <tr class="transition">
+                                <td class="ps-4 fw-bold text-dark py-3.5">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary-subtle text-primary p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                            <i class="bi bi-house-door-fill"></i>
+                                        </div>
+                                        <span class="fs-6">@item.Nombre</span>
+                                    </div>
+                                </td>
+                                <td class="text-secondary py-3.5">@item.Descripcion</td>
+                                <td class="text-center py-3.5">
+                                    <span class="badge bg-light text-primary rounded-pill px-3.5 py-2 fw-bold border border-primary-subtle fs-7 shadow-sm">
+                                        <i class="bi bi-buildings-fill me-1"></i> @item.CantidadPropiedadesAsociadas
                                     </span>
                                 </td>
-                                <td class="pe-4 py-3 text-center">
+                                <td class="pe-4 py-3.5 text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold transition">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold transition d-inline-flex align-items-center">
                                             <i class="bi bi-pencil-square me-1"></i>Editar
                                         </a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 fw-semibold transition">
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 fw-semibold transition d-inline-flex align-items-center">
                                             <i class="bi bi-trash-fill me-1"></i>Eliminar
                                         </a>
                                     </div>
