@@ -3,33 +3,47 @@ using RealStateApp.Domain.Entities;
 
 public static class DefaultIdentitySeed
 {
-    public static async Task SeedRolesAsync(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager)
+    public static async Task SeedRolesAsync(UserManager<Usuario> userManager, RoleManager<IdentityRole<int>> roleManager)
     {
-        // 1. Crear los roles si no existen
-        await roleManager.CreateAsync(new IdentityRole("Administrador"));
-        await roleManager.CreateAsync(new IdentityRole("Agente"));
-        await roleManager.CreateAsync(new IdentityRole("Cliente"));
-        await roleManager.CreateAsync(new IdentityRole("Desarrollador"));
-
-        // 2. Crear el Administrador por defecto
-        var defaultAdmin = new Usuario
+        // 1. Crear los roles
+        string[] roles = { "Administrador", "Agente", "Cliente", "Desarrollador" };
+        foreach (var role in roles)
         {
-            UserName = "Admin",
-            Email = "admin@realestateapp.com",
-            Nombre = "Administrador",
-            Apellido = "Sistema",
-            TipoUsuario = "Administrador",
-            EmailConfirmed = true,
-            EsActivo = true
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole<int>(role));
+            }
+        }
+
+        // 2. Crear Usuarios (Administrador, Cliente y Agente)
+        var usersToSeed = new[]
+        {
+            new { User = "Admin", Email = "admin@realestateapp.com", Role = "Administrador", Nombre = "Administrador", Apellido = "Sistema", Pass = "Admin123!" },
+            new { User = "Cliente1", Email = "cliente@realestateapp.com", Role = "Cliente", Nombre = "Juan", Apellido = "Cliente", Pass = "Cliente123!" },
+            new { User = "Agente1", Email = "agente@realestateapp.com", Role = "Agente", Nombre = "Maria", Apellido = "Agente", Pass = "Agente123!" }
         };
 
-        if (userManager.Users.All(u => u.UserName != defaultAdmin.UserName))
+        foreach (var data in usersToSeed)
         {
-            var user = await userManager.FindByEmailAsync(defaultAdmin.Email);
-            if (user == null)
+            var userExists = await userManager.FindByEmailAsync(data.Email);
+            if (userExists == null)
             {
-                await userManager.CreateAsync(defaultAdmin, "Admin123!"); // ¡contraseña!
-                await userManager.AddToRoleAsync(defaultAdmin, "Administrador");
+                var newUser = new Usuario
+                {
+                    UserName = data.User,
+                    Email = data.Email,
+                    Nombre = data.Nombre,
+                    Apellido = data.Apellido,
+                    TipoUsuario = data.Role,
+                    EmailConfirmed = true,
+                    EsActivo = true
+                };
+
+                var result = await userManager.CreateAsync(newUser, data.Pass);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newUser, data.Role);
+                }
             }
         }
     }
