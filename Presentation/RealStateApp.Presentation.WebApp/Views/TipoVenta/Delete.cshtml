@@ -6,23 +6,36 @@
 
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card border-danger shadow-sm">
-                <div class="card-header bg-danger text-white">
-                    <h4 class="mb-0">Eliminar tipo de venta</h4>
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+                <div class="bg-danger py-4 px-4 text-white text-center">
+                    <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-2"></i>
+                    <h4 class="fw-bold mb-0">Confirmar Eliminación</h4>
                 </div>
-                <div class="card-body text-center py-5">
+                <div class="card-body text-center p-4">
                     
-                    <h5 class="text-danger mb-4">¿Está seguro que desea eliminar este tipo de venta y las propiedades asociadas?</h5>
+                    <h5 class="text-danger fw-semibold mb-4">¿Está seguro que desea eliminar este tipo de venta y las propiedades asociadas?</h5>
                     
-                    <p class="mb-2"><strong>Tipo de venta:</strong> @Model.Nombre</p>
-                    <p class="mb-4 text-muted">@Model.Descripcion</p>
+                    <div class="bg-light p-3 rounded-3 mb-4 text-start">
+                        <div class="mb-2">
+                            <span class="text-secondary small fw-bold d-block">Tipo de venta:</span>
+                            <span class="text-dark fw-semibold">@Model.Nombre</span>
+                        </div>
+                        <div>
+                            <span class="text-secondary small fw-bold d-block">Descripción:</span>
+                            <span class="text-secondary small">@Model.Descripcion</span>
+                        </div>
+                    </div>
 
                     <form asp-action="DeletePost" method="post">
                         <input type="hidden" asp-for="Id" />
-                        <div class="d-flex justify-content-center gap-3 mt-4">
-                            <a asp-action="Index" class="btn btn-secondary px-4">Cancelar</a>
-                            <button type="submit" class="btn btn-danger px-4">Aceptar</button>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 fw-semibold d-inline-flex align-items-center">
+                                <i class="bi bi-trash-fill me-2"></i> Aceptar
+                            </button>
                         </div>
                     </form>
                 </div>

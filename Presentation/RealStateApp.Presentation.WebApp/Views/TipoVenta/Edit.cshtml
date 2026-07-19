@@ -6,33 +6,40 @@
 
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0">Editar tipo de venta</h4>
+        <div class="col-md-8 col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+                <div class="bg-dark-gradient py-4 px-4 text-white">
+                    <h4 class="fw-bold mb-1">
+                        <i class="bi bi-pencil-square me-2 text-warning"></i>Editar tipo de venta
+                    </h4>
+                    <p class="text-white-50 mb-0 small">Modifica los detalles del tipo de venta seleccionado.</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form asp-action="Edit" method="post">
                         
                         <input type="hidden" asp-for="Id" />
 
-                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger mb-3 p-3 bg-danger-subtle rounded-3 small" })
 
                         <div class="mb-3">
-                            <label asp-for="Nombre" class="form-label">Nombre del tipo de venta <span class="text-danger">*</span></label>
-                            <input asp-for="Nombre" class="form-control" />
-                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                            <label asp-for="Nombre" class="form-label text-secondary fw-semibold small">Nombre del tipo de venta <span class="text-danger">*</span></label>
+                            <input asp-for="Nombre" class="form-control rounded-3 border-2 border-light py-2" />
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
-                            <textarea asp-for="Descripcion" class="form-control" rows="4"></textarea>
-                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            <label asp-for="Descripcion" class="form-label text-secondary fw-semibold small">Descripción <span class="text-danger">*</span></label>
+                            <textarea asp-for="Descripcion" class="form-control rounded-3 border-2 border-light py-2" rows="4"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
-                            <button type="submit" class="btn btn-warning">Guardar cambios</button>
+                        <div class="d-flex justify-content-between align-items-center mt-4 border-top pt-3">
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold d-inline-flex align-items-center">
+                                <i class="bi bi-arrow-left me-2"></i> Volver atrás
+                            </a>
+                            <button type="submit" class="btn btn-gradient rounded-pill px-4 py-2 fw-semibold d-inline-flex align-items-center">
+                                <i class="bi bi-floppy-fill me-2"></i> Guardar cambios
+                            </button>
                         </div>
                     </form>
                 </div>
