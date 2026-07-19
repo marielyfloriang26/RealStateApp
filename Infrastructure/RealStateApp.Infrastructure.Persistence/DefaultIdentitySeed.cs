@@ -20,7 +20,9 @@ public static class DefaultIdentitySeed
         {
             new { User = "Admin", Email = "admin@realestateapp.com", Role = "Administrador", Nombre = "Administrador", Apellido = "Sistema", Pass = "Admin123!" },
             new { User = "Cliente1", Email = "cliente@realestateapp.com", Role = "Cliente", Nombre = "Juan", Apellido = "Cliente", Pass = "Cliente123!" },
-            new { User = "Agente1", Email = "agente@realestateapp.com", Role = "Agente", Nombre = "Maria", Apellido = "Agente", Pass = "Agente123!" }
+            new { User = "Agente1", Email = "agente@realestateapp.com", Role = "Agente", Nombre = "Maria", Apellido = "Agente", Pass = "Agente123!" },
+            //api
+            new { User = "Desarrollador", Email = "dev@realestateapp.com", Role = "Desarrollador", Nombre = "Desarrollador", Apellido = "Sistema", Pass = "Dev123!" }
         };
 
         foreach (var data in usersToSeed)
