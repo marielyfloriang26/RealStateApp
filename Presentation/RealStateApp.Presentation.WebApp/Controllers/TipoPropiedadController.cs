@@ -32,22 +32,21 @@ public class TipoPropiedadController : Controller
     {
         if (!ModelState.IsValid || string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
         {
-            if (string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
-            {
-                if (!ModelState.ContainsKey("Nombre") && !ModelState.ContainsKey("Descripcion"))
-                {
-                    ModelState.AddModelError("", "Debe completar todos los campos requeridos.");
-                }
-            }
+            vm.HasError = true;
+            vm.Error = "Debe completar todos los campos requeridos.";
             return View(vm);
         }
 
         var tipos = await _tipoPropiedadService.GetAllViewModel();
         if (tipos.Any(t => t.Nombre.Trim().ToLower() == vm.Nombre.Trim().ToLower()))
         {
-            ModelState.AddModelError("Nombre", "Ya existe un tipo de propiedad registrado con este nombre.");
+            vm.HasError = true;
+            vm.Error = "Ya existe un tipo de propiedad registrado con este nombre.";
             return View(vm);
         }
+
+        vm.Nombre = vm.Nombre.Trim();
+        vm.Descripcion = vm.Descripcion.Trim();
 
         await _tipoPropiedadService.Add(vm);
         TempData["SuccessMessage"] = "El tipo de propiedad fue creado correctamente.";
@@ -59,6 +58,7 @@ public class TipoPropiedadController : Controller
         var vm = await _tipoPropiedadService.GetByIdSaveViewModel(id);
         if (vm == null)
         {
+            TempData["ErrorMessage"] = "El tipo de propiedad seleccionado no existe.";
             return RedirectToAction("Index");
         }
         return View(vm);
@@ -69,13 +69,8 @@ public class TipoPropiedadController : Controller
     {
         if (!ModelState.IsValid || string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
         {
-            if (string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
-            {
-                if (!ModelState.ContainsKey("Nombre") && !ModelState.ContainsKey("Descripcion"))
-                {
-                    ModelState.AddModelError("", "Debe completar todos los campos requeridos.");
-                }
-            }
+            vm.HasError = true;
+            vm.Error = "Debe completar todos los campos requeridos.";
             return View(vm);
         }
 
@@ -89,9 +84,13 @@ public class TipoPropiedadController : Controller
         var tipos = await _tipoPropiedadService.GetAllViewModel();
         if (tipos.Any(t => t.Id != vm.Id && t.Nombre.Trim().ToLower() == vm.Nombre.Trim().ToLower()))
         {
-            ModelState.AddModelError("Nombre", "Ya existe otro tipo de propiedad registrado con este nombre.");
+            vm.HasError = true;
+            vm.Error = "Ya existe otro tipo de propiedad registrado con este nombre.";
             return View(vm);
         }
+
+        vm.Nombre = vm.Nombre.Trim();
+        vm.Descripcion = vm.Descripcion.Trim();
 
         await _tipoPropiedadService.Update(vm, vm.Id);
         TempData["SuccessMessage"] = "El tipo de propiedad fue actualizado correctamente.";

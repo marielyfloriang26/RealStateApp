@@ -99,6 +99,9 @@ public class PropertyTypesController : ControllerBase
                 return BadRequest("Ya existe un tipo de propiedad registrado con este nombre.");
             }
 
+            vm.Nombre = vm.Nombre.Trim();
+            vm.Descripcion = vm.Descripcion.Trim();
+
             var result = await _tipoPropiedadService.Add(vm);
             var refreshedTipos = await _tipoPropiedadService.GetAllViewModel();
             var createdVm = refreshedTipos.FirstOrDefault(t => t.Id == result.Id);
@@ -150,6 +153,9 @@ public class PropertyTypesController : ControllerBase
             {
                 return BadRequest("Ya existe otro tipo de propiedad registrado con este nombre.");
             }
+
+            vm.Nombre = vm.Nombre.Trim();
+            vm.Descripcion = vm.Descripcion.Trim();
 
             await _tipoPropiedadService.Update(vm, id);
             

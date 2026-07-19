@@ -11,4 +11,7 @@ public class SaveTipoPropiedadViewModel
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "Debe completar todos los campos requeridos.")]
     public string Descripcion { get; set; } = null!;
+
+    public bool HasError { get; set; }
+    public string? Error { get; set; }
 }
