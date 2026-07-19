@@ -86,8 +86,20 @@ public class MejoraController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpPost]
     public async Task<IActionResult> Delete(int id)
+    {
+        var vm = await _mejoraService.GetSaveViewModelByIdAsync(id);
+        if (vm == null)
+        {
+            TempData["ErrorMessage"] = "La mejora seleccionada no existe.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeletePost(int id)
     {
         try
         {
