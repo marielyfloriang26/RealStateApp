@@ -100,7 +100,9 @@ public class PropertyTypesController : ControllerBase
             }
 
             var result = await _tipoPropiedadService.Add(vm);
-            return StatusCode(StatusCodes.Status201Created, result);
+            var refreshedTipos = await _tipoPropiedadService.GetAllViewModel();
+            var createdVm = refreshedTipos.FirstOrDefault(t => t.Id == result.Id);
+            return StatusCode(StatusCodes.Status201Created, createdVm);
         }
         catch (Exception)
         {

@@ -1,0 +1,843 @@
+--- PAGE 124 ---
+ 
+●  Si  se  busca  un  agente  especíﬁco  y  no  existe,  se  debe  retornar  404  Not  Found .  ●  Si  el  agente  existe,  pero  no  tiene  propiedades,  el  endpoint  GetAgentProperty  debe  
+retornar
+ 
+204
+ 
+No
+ 
+Content
+.
+ ●  Los  datos  deben  retornar  en  formato  JSON.  ●  La  respuesta  no  debe  exponer  información  sensible  del  agente.  ●  Si  ocurre  un  error  inesperado,  la  API  debe  retornar  500  Internal  Server  Error .  ●  Los  errores  de  validación  deben  manejarse  con  respuestas  claras  y  códigos  HTTP  
+adecuados.
+ 
+Mant.  de  tipo  de  propiedades  
+La  API  debe  incluir  un  controlador  para  la  gestión  de  tipos  de  propiedades  llamado  
+PropertyTypesController
+ 
+o
+ 
+PropertyTypeController
+,
+ 
+según
+ 
+la
+ 
+convención
+ 
+de
+ 
+nombres
+ 
+utilizada
+ 
+en
+ 
+el
+ 
+proyecto.
+ 
+Este  controlador  debe  permitir  crear,  editar,  consultar  y  eliminar  los  tipos  de  
+propiedades
+ 
+registrados
+ 
+en
+ 
+el
+ 
+sistema.
+ 
+Los  endpoints  de  consulta  deben  estar  disponibles  para  usuarios  autenticados  con  
+rol
+ 
+Administrador
+ 
+o
+ 
+Desarrollador
+.
+ 
+Los
+ 
+endpoints
+ 
+de
+ 
+creación,
+ 
+edición
+ 
+y
+ 
+eliminación
+ 
+deben
+ 
+estar
+ 
+disponibles
+ 
+únicamente
+ 
+para
+ 
+usuarios
+ 
+con
+ 
+rol
+ 
+Administrador
+.
+ 
+Datos  de  un  tipo  de  propiedad  
+La  información  de  un  tipo  de  propiedad  retornada  por  la  API  debe  incluir,  como  mínimo,  los  
+siguientes
+ 
+campos:
+ 
+Campo
+ 
+Tipo  de  dato
+ 
+Descripción
+ 
+Id
+ 
+Entero
+ 
+Identiﬁcador  único  del  tipo  de  propiedad.
+ 
+Nombre
+ 
+Texto  /  string
+ 
+Nombre  del  tipo  de  propiedad.
+ 
+Descripción
+ 
+Texto  /  string
+ 
+Descripción  general  del  tipo  de  propiedad.
+ 
+Endpoints  del  controlador  de  tipo  de  propiedades  
+El  controlador  de  tipo  de  propiedades  debe  exponer  los  siguientes  endpoints:  
+--- PAGE 125 ---
+ 
+Nombre
+ 
+Método
+ 
+Parámetros
+ 
+Respuesta  OK
+ 
+Respuesta  KO
+ 
+Roles  permitidos
+ 
+Create
+ 
+POST
+ 
+Datos  del  tipo  de  propiedad
+ 
+201  Created  con  el  tipo  de  propiedad  creado.
+ 
+400  Bad  Request  si  los  datos  no  son  válidos.  500  Internal  Server  Error  si  ocurre  un  error  interno.
+ 
+Administrador
+ 
+Update
+ 
+PUT
+ 
+Id  del  tipo  de  propiedad  y  datos  actualizados
+ 
+200  OK  con  el  tipo  de  propiedad  actualizado  en  formato  JSON.
+ 
+400  Bad  Request  si  los  datos  no  son  válidos.  404  Not  Found  si  el  tipo  de  propiedad  no  existe.  500  Internal  Server  Error  si  ocurre  un  error  interno.
+ 
+Administrador
+ 
+List
+ 
+GET
+ 
+Ninguno
+ 
+200  OK  con  el  listado  de  tipos  de  propiedades  en  formato  JSON.
+ 
+204  No  Content  si  no  existen  tipos  de  propiedades.  500  Internal  Server  Error  si  ocurre  un  error  interno.
+ 
+Administrador,  Desarrollador
+ 
+GetById
+ 
+GET
+ 
+Id  del  tipo  de  propiedad
+ 
+200  OK  con  los  datos  del  tipo  de  
+404  Not  Found  si  el  tipo  de  
+Administrador,  
+--- PAGE 126 ---
+ 
+Nombre
+ 
+Método
+ 
+Parámetros
+ 
+Respuesta  OK
+ 
+Respuesta  KO
+ 
+Roles  permitidos
+ 
+propiedad  en  formato  JSON.
+ 
+propiedad  no  existe.  500  Internal  Server  Error  si  ocurre  un  error  interno.
+ 
+Desarrollador
+ 
+Delete
+ 
+DELETE
+ 
+Id  del  tipo  de  propiedad
+ 
+204  No  Content  si  se  elimina  correctamente.
+ 
+404  Not  Found  si  el  tipo  de  propiedad  no  existe.  500  Internal  Server  Error  si  ocurre  un  error  interno.
+ 
+Administrador
+ 
+Endpoint  Create  
+El  endpoint  Create  debe  permitir  registrar  un  nuevo  tipo  de  propiedad  en  el  sistema.  
+Solicitud  Elemento
+ 
+Valor
+ 
+Método  HTTP
+ 
+POST
+ 
+Parámetros
+ 
+Datos  del  tipo  de  propiedad
+ 
+Seguridad
+ 
+Requiere  token  JWT
+ 
+Roles  permitidos
+ 
+Administrador
+ 
+El  cuerpo  de  la  solicitud  debe  contener  los  siguientes  campos:  
+ 
+--- PAGE 127 ---
+ 
+Campo
+ 
+Tipo  de  dato
+ 
+Requerido
+ 
+Descripción
+ 
+Nombre
+ 
+Texto  /  string
+ 
+Sí
+ 
+Nombre  del  tipo  de  propiedad  que  se  desea  registrar.
+ 
+Descripción
+ 
+Texto  /  string
+ 
+Sí
+ 
+Descripción  general  del  tipo  de  propiedad.
+ 
+Validaciones  
+El  endpoint  debe  cumplir  las  siguientes  validaciones:  
+●  El  nombre  del  tipo  de  propiedad  es  requerido.  ●  La  descripción  es  requerida.  ●  El  nombre  no  debe  guardarse  vacío  ni  solo  con  espacios  en  blanco.  ●  No  debe  existir  otro  tipo  de  propiedad  registrado  con  el  mismo  nombre.  
+Si  los  datos  enviados  no  cumplen  las  validaciones  requeridas,  la  API  debe  retornar  400  Bad  
+Request
+ 
+con
+ 
+el
+ 
+detalle
+ 
+de
+ 
+los
+ 
+errores.
+ 
+Mensaje  sugerido:  
+“Los  datos  enviados  no  son  válidos.”  
+Si  ya  existe  un  tipo  de  propiedad  con  el  mismo  nombre,  la  API  debe  retornar  400  Bad  
+Request
+ 
+con
+ 
+un
+ 
+mensaje
+ 
+como:
+ 
+“Ya  existe  un  tipo  de  propiedad  registrado  con  este  nombre.”  
+Si  el  tipo  de  propiedad  se  crea  correctamente,  la  API  debe  retornar  201  Created  con  los  
+datos
+ 
+del
+ 
+registro
+ 
+creado.
+ 
+Endpoint  Update  
+El  endpoint  Update  debe  permitir  modiﬁcar  los  datos  de  un  tipo  de  propiedad  existente.  
+Solicitud   
+Elemento
+ 
+Valor
+ 
+Método  HTTP
+ 
+PUT
+ 
+Parámetros  requeridos
+ 
+Id  del  tipo  de  propiedad  y  datos  actualizados
+ 
+Seguridad
+ 
+Requiere  token  JWT
+ 
+--- PAGE 128 ---
+ 
+Elemento
+ 
+Valor
+ 
+Roles  permitidos
+ 
+Administrador
+ 
+El  cuerpo  de  la  solicitud  debe  contener  los  siguientes  campos:  
+Campo
+ 
+Tipo  de  dato
+ 
+Requerido
+ 
+Descripción
+ 
+Nombre
+ 
+Texto  /  string
+ 
+Sí
+ 
+Nuevo  nombre  del  tipo  de  propiedad.
+ 
+Descripción
+ 
+Texto  /  string
+ 
+Sí
+ 
+Nueva  descripción  del  tipo  de  propiedad.
+ 
+Validaciones  
+El  endpoint  debe  cumplir  las  siguientes  validaciones:  
+●  El  Id  del  tipo  de  propiedad  es  requerido.  ●  El  Id  debe  tener  un  formato  válido.  ●  El  tipo  de  propiedad  debe  existir  en  el  sistema.  ●  El  nombre  es  requerido.  ●  La  descripción  es  requerida.  ●  El  nombre  no  debe  guardarse  vacío  ni  solo  con  espacios  en  blanco.  ●  No  debe  existir  otro  tipo  de  propiedad  registrado  con  el  mismo  nombre.  
+Si  el  Id  enviado  no  tiene  un  formato  válido  o  los  datos  enviados  no  cumplen  las  validaciones  
+requeridas,
+ 
+la
+ 
+API
+ 
+debe
+ 
+retornar
+ 
+400
+ 
+Bad
+ 
+Request
+.
+ 
+Si  el  tipo  de  propiedad  no  existe,  la  API  debe  retornar  404  Not  Found  con  un  mensaje  
+como:
+ 
+“El  tipo  de  propiedad  solicitado  no  existe.”  
+Si  ya  existe  otro  tipo  de  propiedad  con  el  mismo  nombre,  la  API  debe  retornar  400  Bad  
+Request
+ 
+con
+ 
+un
+ 
+mensaje
+ 
+como:
+ 
+“Ya  existe  otro  tipo  de  propiedad  registrado  con  este  nombre.”  
+Si  el  tipo  de  propiedad  se  actualiza  correctamente,  la  API  debe  retornar  200  OK  con  los  
+datos
+ 
+actualizados
+ 
+en
+ 
+formato
+ 
+JSON.
+ 
+ 
+ 
+ 
+--- PAGE 129 ---
+ 
+Endpoint  List  
+El  endpoint  List  debe  permitir  obtener  el  listado  de  todos  los  tipos  de  propiedades  
+registrados
+ 
+en
+ 
+el
+ 
+sistema.
+ 
+Solicitud  Elemento
+ 
+Valor
+ 
+Método  HTTP
+ 
+GET
+ 
+Parámetros
+ 
+No  requiere  parámetros
+ 
+Seguridad
+ 
+Requiere  token  JWT
+ 
+Roles  permitidos
+ 
+Administrador,  Desarrollador
+ 
+Respuestas  esperadas   
+Código  HTTP
+ 
+Descripción
+ 
+200  OK
+ 
+Retorna  el  listado  de  tipos  de  propiedades  en  formato  JSON.
+ 
+204  No  Content
+ 
+No  existen  tipos  de  propiedades  registrados.
+ 
+401  Unauthorized
+ 
+El  usuario  no  está  autenticado  o  el  token  JWT  no  es  válido.
+ 
+403  Forbidden
+ 
+El  usuario  autenticado  no  tiene  permisos  para  acceder  al  endpoint.
+ 
+500  Internal  Server  Error
+ 
+Ocurrió  un  error  interno  en  el  servidor.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+--- PAGE 130 ---
+ 
+Endpoint  GetById  
+El  endpoint  GetById  debe  permitir  obtener  los  datos  de  un  tipo  de  propiedad  especíﬁco  a  
+partir
+ 
+de
+ 
+su
+ 
+identiﬁcador
+ 
+único.
+ 
+Solicitud   
+Elemento
+ 
+Valor
+ 
+Método  HTTP
+ 
+GET
+ 
+Parámetro  requerido
+ 
+Id  del  tipo  de  propiedad
+ 
+Seguridad
+ 
+Requiere  token  JWT
+ 
+Roles  permitidos
+ 
+Administrador,  Desarrollador
+ 
+Validaciones  
+El  endpoint  debe  cumplir  las  siguientes  validaciones:  
+●  El  Id  del  tipo  de  propiedad  es  requerido.  ●  El  Id  debe  tener  un  formato  válido.  ●  El  tipo  de  propiedad  consultado  debe  existir  en  el  sistema.  
+Si  el  tipo  de  propiedad  existe,  la  API  debe  retornar  sus  datos  en  formato  JSON.  
+Si  el  tipo  de  propiedad  no  existe,  la  API  debe  retornar  404  Not  Found  con  un  mensaje  
+como:
+ 
+“El  tipo  de  propiedad  solicitado  no  existe.”  
+Respuestas  esperadas  Código  HTTP
+ 
+Descripción
+ 
+200  OK
+ 
+Retorna  los  datos  del  tipo  de  propiedad  en  formato  JSON.
+ 
+400  Bad  Request
+ 
+El  Id  enviado  no  tiene  un  formato  válido.
+ 
+401  Unauthorized
+ 
+El  usuario  no  está  autenticado  o  el  token  JWT  no  es  válido.
+ 
+--- PAGE 131 ---
+ 
+Código  HTTP
+ 
+Descripción
+ 
+403  Forbidden
+ 
+El  usuario  autenticado  no  tiene  permisos  para  acceder  al  endpoint.
+ 
+404  Not  Found
+ 
+No  existe  un  tipo  de  propiedad  con  el  Id  enviado.
+ 
+500  Internal  Server  Error
+ 
+Ocurrió  un  error  interno  en  el  servidor.
+ 
+Endpoint  Delete  
+El  endpoint  Delete  debe  permitir  eliminar  un  tipo  de  propiedad  existente.  
+Al  eliminar  un  tipo  de  propiedad,  también  deben  eliminarse  o  gestionar  
+correctamente
+ 
+las
+ 
+propiedades
+ 
+asociadas
+ 
+a
+ 
+dicho
+ 
+tipo,
+ 
+de
+ 
+acuerdo
+ 
+con
+ 
+la
+ 
+regla
+ 
+deﬁnida
+ 
+en
+ 
+el
+ 
+mantenimiento
+ 
+web
+ 
+de
+ 
+tipo
+ 
+de
+ 
+propiedades.
+ 
+Solicitud  Elemento
+ 
+Valor
+ 
+Método  HTTP
+ 
+DELETE
+ 
+Parámetro  requerido
+ 
+Id  del  tipo  de  propiedad
+ 
+Seguridad
+ 
+Requiere  token  JWT
+ 
+Roles  permitidos
+ 
+Administrador
+ 
+Validaciones  
+El  endpoint  debe  cumplir  las  siguientes  validaciones:  
+●  El  usuario  autenticado  debe  tener  rol  Administrador .  ●  El  Id  del  tipo  de  propiedad  es  requerido.  ●  El  Id  debe  tener  un  formato  válido.  ●  El  tipo  de  propiedad  debe  existir  en  el  sistema.  ●  Si  el  tipo  de  propiedad  tiene  propiedades  asociadas,  estas  deben  eliminarse  o  
+gestionarse
+ 
+correctamente
+ 
+junto
+ 
+con
+ 
+sus
+ 
+datos
+ 
+relacionados.
+ 
+La  eliminación  debe  considerar  los  datos  relacionados  con  las  propiedades  
+asociadas,
+ 
+incluyendo:
+ 
+--- PAGE 132 ---
+ 
+●  Propiedades  asociadas  al  tipo  de  propiedad.  ●  Imágenes  de  las  propiedades  asociadas.  ●  Mejoras  relacionadas  con  las  propiedades  asociadas.  ●  Ofertas  realizadas  sobre  las  propiedades  asociadas.  ●  Conversaciones  o  mensajes  relacionados  con  las  propiedades  asociadas.  ●  Propiedades  favoritas  de  clientes  relacionadas  con  las  propiedades  
+asociadas.
+ 
+Si  el  tipo  de  propiedad  no  existe,  la  API  debe  retornar  404  Not  Found  con  un  
+mensaje
+ 
+como:
+ 
+“El  tipo  de  propiedad  solicitado  no  existe.”  
+Si  el  tipo  de  propiedad  se  elimina  correctamente,  la  API  debe  retornar  204  No  
+Content
+.
+ 
+Respuestas  esperadas  Código  HTTP
+ 
+Descripción
+ 
+204  No  Content
+ 
+El  tipo  de  propiedad  fue  eliminado  correctamente.
+ 
+400  Bad  Request
+ 
+El  Id  enviado  no  tiene  un  formato  válido.
+ 
+401  Unauthorized
+ 
+El  usuario  no  está  autenticado  o  el  token  JWT  no  es  válido.
+ 
+403  Forbidden
+ 
+El  usuario  autenticado  no  tiene  permisos  para  eliminar  el  recurso.
+ 
+404  Not  Found
+ 
+No  existe  un  tipo  de  propiedad  con  el  Id  enviado.
+ 
+500  Internal  Server  Error
+ 
+Ocurrió  un  error  interno  en  el  servidor.
+ 
+Reglas  adicionales  del  controlador  de  tipo  de  propiedades  
+El  controlador  de  tipo  de  propiedades  debe  cumplir  las  siguientes  reglas:  
+●  Todos  los  endpoints  del  controlador  deben  estar  protegidos  mediante  JWT.  ●  Los  endpoints  de  consulta  deben  estar  disponibles  para  usuarios  con  rol  
+Administrador
+ 
+o
+ 
+Desarrollador
+.
+ ●  Los  endpoints  de  creación,  edición  y  eliminación  deben  estar  disponibles  
+únicamente
+ 
+para
+ 
+usuarios
+ 
+con
+ 
+rol
+ 
+Administrador
+.
+ 
+--- PAGE 133 ---
+ 
+●  El  nombre  del  tipo  de  propiedad  no  debe  repetirse.  ●  El  endpoint  Create  debe  crear  un  nuevo  tipo  de  propiedad  y  retornar  201  
+Created
+.
+ ●  El  endpoint  Update  debe  actualizar  un  tipo  de  propiedad  existente  y  retornar  
+200
+ 
+OK
+.
+ ●  El  endpoint  List  debe  retornar  todos  los  tipos  de  propiedades  registrados.  ●  El  endpoint  GetById  debe  retornar  un  solo  tipo  de  propiedad  según  el  Id  
+recibido.
+ ●  El  endpoint  Delete  debe  eliminar  el  tipo  de  propiedad  seleccionado.  ●  Si  no  existen  tipos  de  propiedades  registrados,  el  endpoint  List  debe  retornar  
+204
+ 
+No
+ 
+Content
+.
+ ●  Si  se  busca  un  tipo  de  propiedad  especíﬁco  y  no  existe,  se  debe  retornar  404  
+Not
+ 
+Found
+.
+ ●  Al  eliminar  un  tipo  de  propiedad,  también  deben  eliminarse  o  gestionar  
+correctamente
+ 
+las
+ 
+propiedades
+ 
+asociadas
+ 
+y
+ 
+sus
+ 
+datos
+ 
+relacionados.
+ ●  Los  datos  deben  retornar  en  formato  JSON.  ●  Si  ocurre  un  error  inesperado,  la  API  debe  retornar  500  Internal  Server  Error .  ●  Los  errores  de  validación  deben  manejarse  con  respuestas  claras  y  códigos  
+HTTP
+ 
+adecuados.
+ 
+Mant.  de  tipo  de  ventas  
+Esto  son  los  endpoint  que  debe  tener  el  controlador  de  tipo  de  ventas:  
+La  API  debe  incluir  un  controlador  para  la  gestión  de  tipos  de  ventas  llamado  
+SaleTypesController
+ 
+o
+ 
+SaleTypeController
+,
+ 
+según
+ 
+la
+ 
+convención
+ 
+de
+ 
+nombres
+ 
+utilizada
+ 
+en
+ 
+el
+ 
+proyecto.
+ 
+Este  controlador  debe  permitir  crear,  editar,  consultar  y  eliminar  los  tipos  de  ventas  
+registrados
+ 
+en
+ 
+el
+ 
+sistema.
+ 
+Los  endpoints  de  consulta  deben  estar  disponibles  para  usuarios  autenticados  con  
+rol
+ 
+Administrador
+ 
+o
+ 
+Desarrollador
+.
+ 
+Los
+ 
+endpoints
+ 
+de
+ 
+creación,
+ 
+edición
+ 
+y
+ 
+eliminación
+ 
+deben
+ 
+estar
+ 
+disponibles
+ 
+únicamente
+ 
+para
+ 
+usuarios
+ 
+con
+ 
+rol
+ 
+Administrador
+.
+ 
+Datos  de  un  tipo  de  venta  
+La  información  de  un  tipo  de  venta  retornada  por  la  API  debe  incluir,  como  mínimo,  
+los
+ 
+siguientes
+ 
+campos:
+ 
+--- PAGE 134 ---
