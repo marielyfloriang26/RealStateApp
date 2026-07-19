@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 namespace RealStateApp.Presentation.WebApi.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
 [Authorize(Roles = "Administrador, Desarrollador")]
 public class ImprovementsController : ControllerBase
 {
@@ -40,7 +39,7 @@ public class ImprovementsController : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error interno en el servidor.");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Ocurrió un error interno en el servidor." });
         }
     }
 
@@ -55,11 +54,11 @@ public class ImprovementsController : ControllerBase
     {
         try
         {
-            if (id <= 0) return BadRequest("El Id enviado no tiene un formato válido.");
+            if (id <= 0) return BadRequest(new { Message = "El Id enviado no tiene un formato válido." });
             var mejoraSave = await _mejoraService.GetSaveViewModelByIdAsync(id);
             if (mejoraSave == null)
             {
-                return NotFound("La mejora solicitada no existe.");
+                return NotFound(new { Message = "La mejora solicitada no existe." });
             }
             
             var mejora = await _mejoraService.GetViewModelByIdWithIncludeAsync(id);
@@ -67,7 +66,7 @@ public class ImprovementsController : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error interno en el servidor.");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Ocurrió un error interno en el servidor." });
         }
     }
 
@@ -84,26 +83,28 @@ public class ImprovementsController : ControllerBase
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Los datos enviados no son válidos.");
+                return BadRequest(new { Message = "Los datos enviados no son válidos.", Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
             }
 
             if (string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
             {
-                return BadRequest("Los datos enviados no son válidos.");
+                return BadRequest(new { Message = "Los datos enviados no son válidos." });
             }
 
             var mejoras = await _mejoraService.GetAllViewModelWithIncludeAsync();
             if (mejoras.Any(m => m.Nombre.Trim().ToLower() == vm.Nombre.Trim().ToLower()))
             {
-                return BadRequest("Ya existe una mejora registrada con este nombre.");
+                return BadRequest(new { Message = "Ya existe una mejora registrada con este nombre." });
             }
 
             var result = await _mejoraService.AddAsync(vm);
-            return StatusCode(StatusCodes.Status201Created, result);
+            var allVm = await _mejoraService.GetAllViewModelWithIncludeAsync();
+            var createdVm = allVm.FirstOrDefault(m => m.Id == result.Id);
+            return StatusCode(StatusCodes.Status201Created, createdVm);
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error interno en el servidor.");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Ocurrió un error interno en el servidor." });
         }
     }
 
@@ -119,33 +120,33 @@ public class ImprovementsController : ControllerBase
     {
         try
         {
-            if (id <= 0) return BadRequest("El Id enviado no tiene un formato válido.");
+            if (id <= 0) return BadRequest(new { Message = "El Id enviado no tiene un formato válido." });
             
             if (!ModelState.IsValid)
             {
-                return BadRequest("Los datos enviados no son válidos.");
+                return BadRequest(new { Message = "Los datos enviados no son válidos.", Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
             }
 
             if (id != vm.Id)
             {
-                return BadRequest("Los datos enviados no son válidos.");
+                return BadRequest(new { Message = "Los datos enviados no son válidos." });
             }
 
             if (string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
             {
-                return BadRequest("Los datos enviados no son válidos.");
+                return BadRequest(new { Message = "Los datos enviados no son válidos." });
             }
 
             var existingMejora = await _mejoraService.GetSaveViewModelByIdAsync(id);
             if (existingMejora == null)
             {
-                return NotFound("La mejora solicitada no existe.");
+                return NotFound(new { Message = "La mejora solicitada no existe." });
             }
 
             var mejoras = await _mejoraService.GetAllViewModelWithIncludeAsync();
             if (mejoras.Any(m => m.Id != id && m.Nombre.Trim().ToLower() == vm.Nombre.Trim().ToLower()))
             {
-                return BadRequest("Ya existe otra mejora registrada con este nombre.");
+                return BadRequest(new { Message = "Ya existe otra mejora registrada con este nombre." });
             }
 
             await _mejoraService.UpdateAsync(vm, id);
@@ -156,7 +157,7 @@ public class ImprovementsController : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error interno en el servidor.");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Ocurrió un error interno en el servidor." });
         }
     }
 
@@ -172,11 +173,11 @@ public class ImprovementsController : ControllerBase
     {
         try
         {
-            if (id <= 0) return BadRequest("El Id enviado no tiene un formato válido.");
+            if (id <= 0) return BadRequest(new { Message = "El Id enviado no tiene un formato válido." });
             var mejora = await _mejoraService.GetSaveViewModelByIdAsync(id);
             if (mejora == null)
             {
-                return NotFound("La mejora solicitada no existe.");
+                return NotFound(new { Message = "La mejora solicitada no existe." });
             }
 
             await _mejoraService.DeleteAsync(id);
@@ -184,7 +185,7 @@ public class ImprovementsController : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error interno en el servidor.");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Ocurrió un error interno en el servidor." });
         }
     }
 }

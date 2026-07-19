@@ -4,88 +4,93 @@
     ViewData["Title"] = "Mantenimiento de mejoras";
 }
 
-<div class="container mt-4">
-    <div class="row mb-3">
-        <div class="col-6">
-            <h2>Mantenimiento de mejoras</h2>
-        </div>
-        <div class="col-6 text-end">
-            <a asp-action="Create" class="btn btn-primary">Crear mejora</a>
-        </div>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-4 rounded-4 shadow-sm">
+        <h2 class="fw-bold mb-0 text-dark">Mantenimiento de mejoras</h2>
+        <a asp-action="Create" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Crear mejora
+        </a>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["ErrorMessage"]
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (Model == null || !Model.Any())
     {
-        <div class="alert alert-warning">
-            No existen mejoras registradas.
+        <div class="alert alert-warning border-0 shadow-sm rounded-4 p-4 text-center">
+            <i class="bi bi-info-circle fs-1 text-warning d-block mb-2"></i>
+            <h5 class="fw-bold text-dark mb-0">No existen mejoras registradas.</h5>
         </div>
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Nombre de la mejora</th>
-                        <th>Descripción</th>
-                        <th>Cantidad de propiedades asociadas</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var mejora in Model)
-                    {
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light text-secondary">
                         <tr>
-                            <td>@mejora.Nombre</td>
-                            <td>@mejora.Descripcion</td>
-                            <td>@mejora.CantidadPropiedades</td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@mejora.Id" class="btn btn-sm btn-warning">Editar</a>
-                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@mejora.Id">
-                                    Eliminar
-                                </button>
+                            <th class="py-3 px-4 fw-semibold border-0">Nombre de la mejora</th>
+                            <th class="py-3 px-4 fw-semibold border-0">Descripción</th>
+                            <th class="py-3 px-4 fw-semibold border-0 text-center">Cantidad de propiedades asociadas</th>
+                            <th class="py-3 px-4 fw-semibold border-0 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        @foreach (var mejora in Model)
+                        {
+                            <tr>
+                                <td class="px-4 py-3 fw-medium text-dark">@mejora.Nombre</td>
+                                <td class="px-4 py-3 text-muted">@mejora.Descripcion</td>
+                                <td class="px-4 py-3 text-center">
+                                    <span class="badge bg-secondary rounded-pill px-3 py-2">@mejora.CantidadPropiedades</span>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@mejora.Id" class="btn btn-sm btn-outline-warning rounded-pill px-3 fw-semibold">Editar</a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#deleteModal-@mejora.Id">
+                                            Eliminar
+                                        </button>
+                                    </div>
 
-                                <!-- Delete Modal -->
-                                <div class="modal fade" id="deleteModal-@mejora.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@mejora.Id" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteModalLabel-@mejora.Id">Eliminar mejora</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                ¿Está seguro que desea eliminar esta mejora?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <form asp-action="Delete" asp-route-id="@mejora.Id" method="post">
-                                                    <button type="submit" class="btn btn-danger">Aceptar</button>
-                                                </form>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade text-start" id="deleteModal-@mejora.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@mejora.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border-0 shadow-lg rounded-4">
+                                                <div class="modal-header border-0 pb-0">
+                                                    <h5 class="modal-title fw-bold" id="deleteModalLabel-@mejora.Id">Eliminar mejora</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body py-4">
+                                                    <p class="mb-0 fs-5">¿Está seguro que desea eliminar esta mejora?</p>
+                                                </div>
+                                                <div class="modal-footer border-0 pt-0">
+                                                    <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+                                                    <form asp-action="Delete" asp-route-id="@mejora.Id" method="post">
+                                                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold shadow-sm">Aceptar</button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 </div>
