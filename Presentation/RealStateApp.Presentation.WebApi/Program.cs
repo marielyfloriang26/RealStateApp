@@ -4,7 +4,8 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using RealStateApp.Infrastructure.Persistence.Contexts;
 using RealStateApp.Domain.Entities;
-using RealStateApp.Infrastructure.Persistence; // Asegúrate de tener este using
+using RealStateApp.Infrastructure.Persistence;
+using Microsoft.OpenApi.Models; // Añade esta línea
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,14 +26,21 @@ builder.Services.AddAuthentication(options => {
     options.TokenValidationParameters = new TokenValidationParameters {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"])),
-        ValidateIssuer = false,
+        ValidateIssuer = false, // Ajustado según tu config actual
         ValidateAudience = false,
         ValidateLifetime = true
     };
     
-    // Personalización para manejar 403 Forbidden específicamente
+    // Personalización para manejar 401 Unauthorized y 403 Forbidden
     options.Events = new JwtBearerEvents
     {
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+            return context.Response.WriteAsync("{\"message\": \"No está autorizado para acceder a este recurso.\"}");
+        },
         OnForbidden = context =>
         {
             context.Response.StatusCode = 403;
@@ -43,14 +51,46 @@ builder.Services.AddAuthentication(options => {
 });
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+
+// 3. CONFIGURACIÓN DE SWAGGER
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "RealStateApp API", Version = "v1" });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Ingresa el token en este formato: Bearer {tu token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 var app = builder.Build();
 
-// 3. PIPELINE DE SEGURIDAD
+// 4. PIPELINE DE EJECUCIÓN
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

@@ -29,14 +29,13 @@ public class AccountController : ControllerBase
         var user = await _userManager.FindByNameAsync(model.UserName) ?? await _userManager.FindByEmailAsync(model.UserName);
         
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-            return Unauthorized("Los datos de acceso son inválidos.");
+            return Unauthorized(new { message = "Los datos de acceso son inválidos." });
 
         if (!user.EsActivo)
-            return Unauthorized("El usuario se encuentra inactivo y no puede autenticarse.");
+            return Unauthorized(new { message = "El usuario se encuentra inactivo y no puede autenticarse." });
 
         var roles = await _userManager.GetRolesAsync(user);
         
-        // Ahora usamos el DTO tipado
         var response = new AuthenticationResponse
         {
             Token = GenerateJwtToken(user, roles),
@@ -60,19 +59,19 @@ public class AccountController : ControllerBase
 
     private async Task<IActionResult> RegisterUser(RegisterRequest model, string role)
     {
-        if (!ModelState.IsValid) return BadRequest("Los datos enviados no son válidos.");
+        if (!ModelState.IsValid) return BadRequest(new { message = "Los datos enviados no son válidos." });
         
         if (model.Password != model.ConfirmPassword) 
-            return BadRequest("La contraseña y la confirmación de contraseña no coinciden.");
+            return BadRequest(new { message = "La contraseña y la confirmación de contraseña no coinciden." });
         
         if (await _userManager.FindByEmailAsync(model.Email) != null)
-            return BadRequest("Ya existe un usuario registrado con este correo electrónico.");
+            return BadRequest(new { message = "Ya existe un usuario registrado con este correo electrónico." });
 
         if (await _userManager.FindByNameAsync(model.UserName) != null)
-            return BadRequest("Ya existe un usuario registrado con este nombre de usuario.");
+            return BadRequest(new { message = "Ya existe un usuario registrado con este nombre de usuario." });
 
         if (await _userManager.Users.AnyAsync(u => u.Cedula == model.Cedula))
-            return BadRequest("Ya existe un usuario registrado con esta cédula.");
+            return BadRequest(new { message = "Ya existe un usuario registrado con esta cédula." });
 
         var user = new Usuario { 
             Nombre = model.Nombre, 
@@ -81,15 +80,16 @@ public class AccountController : ControllerBase
             Email = model.Email, 
             UserName = model.UserName, 
             EsActivo = true, 
-            EmailConfirmed = true 
+            EmailConfirmed = true,
+            TipoUsuario = role
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
 
-        if (!result.Succeeded) return BadRequest("Los datos enviados no son válidos.");
+        if (!result.Succeeded) return BadRequest(new { message = "Los datos enviados no son válidos." });
         
         await _userManager.AddToRoleAsync(user, role);
-        return StatusCode(201, "Usuario creado correctamente.");
+        return StatusCode(201, new { message = "Usuario creado correctamente." });
     }
 
     private string GenerateJwtToken(Usuario user, IList<string> roles)
