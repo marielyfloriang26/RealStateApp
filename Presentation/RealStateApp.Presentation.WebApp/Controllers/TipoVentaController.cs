@@ -31,8 +31,9 @@ public class TipoVentaController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(SaveTipoVentaViewModel vm)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
         {
+            ModelState.AddModelError("", "Debe completar todos los campos requeridos.");
             return View(vm);
         }
 
@@ -42,6 +43,9 @@ public class TipoVentaController : Controller
             ModelState.AddModelError("Nombre", "Ya existe un tipo de venta registrado con este nombre.");
             return View(vm);
         }
+
+        vm.Nombre = vm.Nombre.Trim();
+        vm.Descripcion = vm.Descripcion.Trim();
 
         await _tipoVentaService.Add(vm);
         TempData["SuccessMessage"] = "El tipo de venta fue creado correctamente.";
@@ -61,8 +65,9 @@ public class TipoVentaController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(SaveTipoVentaViewModel vm)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(vm.Nombre) || string.IsNullOrWhiteSpace(vm.Descripcion))
         {
+            ModelState.AddModelError("", "Debe completar todos los campos requeridos.");
             return View(vm);
         }
 
@@ -72,6 +77,9 @@ public class TipoVentaController : Controller
             ModelState.AddModelError("Nombre", "Ya existe otro tipo de venta registrado con este nombre.");
             return View(vm);
         }
+
+        vm.Nombre = vm.Nombre.Trim();
+        vm.Descripcion = vm.Descripcion.Trim();
 
         await _tipoVentaService.Update(vm, vm.Id);
         TempData["SuccessMessage"] = "El tipo de venta fue actualizado correctamente.";
