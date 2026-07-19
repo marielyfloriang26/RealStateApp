@@ -1,0 +1,65 @@
+@model RealStateApp.Application.ViewModels.Desarrollador.EditarDesarrolladorViewModel
+
+<div class="container mt-4">
+    <h2>Editar Desarrollador</h2>
+    <hr />
+
+    <form asp-action="EditarDesarrollador" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <!-- Columna Izquierda -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label"></label>
+                    <input asp-for="Nombre" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Cedula" class="form-label"></label>
+                    <input asp-for="Cedula" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="UserName" class="form-label">UserName</label>
+                    <input asp-for="UserName" class="form-control" />
+                </div>
+            </div>
+
+            <!-- Columna Derecha -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Apellido" class="form-label"></label>
+                    <input asp-for="Apellido" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Recuadro informativo de contraseñas -->
+        <div class="alert alert-info mt-2">
+            Deje los campos de contraseña en blanco si no desea cambiarlas.
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Nueva Contraseña</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña</label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-warning">Actualizar Desarrollador</button>
+            <a asp-action="ListarDesarrolladores" class="btn btn-secondary">Volver al listado</a>
+        </div>
+    </form>
+</div>

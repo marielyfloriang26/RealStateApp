@@ -49,17 +49,16 @@ public class AccountController : Controller
             {
                 ModelState.AddModelError("", "Su cuenta de agente aún no ha sido activada por un administrador.");
             }
+            else if (await _userManager.IsInRoleAsync(user, "Desarrollador"))
+            {
+                ModelState.AddModelError("", "Su cuenta de desarrollador se encuentra inactiva y no tiene acceso a la API.");
+            }
             else
             {
                 ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
             }
             return View(vm);
         }
-        /*if (!user.EsActivo)
-        {
-            ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
-            return View(vm);
-        }*/
 
         // 3. Validar credenciales
 
