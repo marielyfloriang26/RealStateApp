@@ -1,0 +1,84 @@
+@model List<RealStateApp.Application.ViewModels.Agente.AgentClienteConversacionViewModel>
+
+@{
+    ViewData["Title"] = "Conversaciones con Clientes - Agente";
+    var propiedadId = ViewBag.PropiedadId;
+}
+
+<div class="container my-5">
+    <!-- Breadcrumb & Header -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a asp-controller="Agente" asp-action="Index" class="text-decoration-none">Home del Agente</a></li>
+                        <li class="breadcrumb-item"><a asp-controller="Agente" asp-action="PropiedadDetalle" asp-route-id="@propiedadId" class="text-decoration-none">Detalle de Propiedad</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Conversaciones</li>
+                    </ol>
+                </nav>
+                <h2 class="fw-bold text-dark mb-0">
+                    Clientes con conversación
+                </h2>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a asp-controller="Agente" asp-action="PropiedadDetalle" asp-route-id="@propiedadId" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold">
+                    <i class="bi bi-arrow-left me-1"></i> Volver al detalle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <h4 class="fw-bold mb-4 text-dark">Listado de clientes que han enviado mensajes</h4>
+        
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary small text-uppercase">
+                        <tr>
+                            <th class="ps-3 py-3">Nombre del cliente</th>
+                            <th class="py-3">Último mensaje</th>
+                            <th class="py-3">Fecha del último mensaje</th>
+                            <th class="pe-3 py-3 text-end">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 fw-bold text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light p-2 rounded-circle text-primary me-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                            <i class="bi bi-person-fill"></i>
+                                        </div>
+                                        @c.NombreCliente
+                                    </div>
+                                </td>
+                                <td class="text-secondary">
+                                    <span class="d-inline-block text-truncate" style="max-width: 380px;">@c.UltimoMensaje</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border px-2 py-1">@c.FechaUltimoMensaje.ToString("g")</span>
+                                </td>
+                                <td class="pe-3 text-end">
+                                    <a asp-action="Conversacion" asp-route-propiedadId="@propiedadId" asp-route-clienteId="@c.ClienteId" class="btn btn-gradient rounded-pill px-4 py-1.5 btn-sm fw-semibold shadow-sm">
+                                        Abrir chat
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-chat-square fs-1 mb-2 d-block text-secondary"></i>
+                <p class="mb-0">No hay conversaciones iniciadas para esta propiedad en este momento.</p>
+            </div>
+        }
+    </div>
+</div>

@@ -35,6 +35,9 @@ public class AgentePropiedadService : IAgentePropiedadService
 
         if (propiedad == null) return null;
 
+        var clientesConv = await GetClientesConversacionAsync(propiedadId, agenteId);
+        var clientesOfe = await GetClientesConOfertasAsync(propiedadId, agenteId);
+
         return new AgentPropiedadDetalleViewModel
         {
             Id = propiedad.Id,
@@ -48,7 +51,9 @@ public class AgentePropiedadService : IAgentePropiedadService
             Descripcion = propiedad.Descripcion,
             Estado = propiedad.Estado,
             Imagenes = propiedad.Imagenes?.Select(i => i.ImagenUrl).ToList() ?? new List<string>(),
-            Mejoras = propiedad.PropiedadMejoras?.Select(pm => pm.Mejora?.Nombre ?? "").ToList() ?? new List<string>()
+            Mejoras = propiedad.PropiedadMejoras?.Select(pm => pm.Mejora?.Nombre ?? "").ToList() ?? new List<string>(),
+            ClientesConversacion = clientesConv,
+            ClientesOfertas = clientesOfe
         };
     }
 
@@ -173,22 +178,22 @@ public class AgentePropiedadService : IAgentePropiedadService
         };
     }
 
-    public async Task<bool> ResponderOfertaAsync(int ofertaId, int agenteId, string nuevaRespuesta)
+    public async Task<(bool Success, string ErrorMessage)> ResponderOfertaAsync(int ofertaId, int agenteId, string nuevaRespuesta)
     {
         var ofertas = await _ofertaRepository.GetAllWithIncludeAsync(new List<string> { "Propiedad" });
         var oferta = ofertas.FirstOrDefault(o => o.Id == ofertaId);
 
-        if (oferta == null || oferta.Propiedad?.AgenteId != agenteId) return false;
+        if (oferta == null || oferta.Propiedad?.AgenteId != agenteId) return (false, "Esta oferta ya fue respondida.");
         
         // Reglas de negocio
-        if (oferta.Propiedad.Estado == "Vendida") return false;
-        if (oferta.Estado != "Pendiente") return false;
+        if (oferta.Estado != "Pendiente") return (false, "Esta oferta ya fue respondida.");
+        if (oferta.Propiedad.Estado == "Vendida") return (false, "No se puede aceptar una oferta para una propiedad que ya fue vendida.");
 
         if (nuevaRespuesta == "Rechazada")
         {
             oferta.Estado = "Rechazada";
             await _ofertaRepository.UpdateAsync(oferta);
-            return true;
+            return (true, string.Empty);
         }
 
         if (nuevaRespuesta == "Aceptada")
@@ -208,9 +213,9 @@ public class AgentePropiedadService : IAgentePropiedadService
             oferta.Propiedad.Estado = "Vendida";
             await _propiedadRepository.UpdateAsync(oferta.Propiedad);
 
-            return true;
+            return (true, string.Empty);
         }
 
-        return false;
+        return (false, "Esta oferta ya fue respondida.");
     }
 }

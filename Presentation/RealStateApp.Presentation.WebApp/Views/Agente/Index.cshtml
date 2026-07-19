@@ -1,0 +1,132 @@
+@model List<RealStateApp.Domain.Entities.Propiedad>
+
+@{
+    ViewData["Title"] = "Home del Agente";
+}
+
+<div class="container my-4">
+    <!-- Header banner -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white mb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+            <div>
+                <span class="badge bg-primary text-white rounded-pill px-3 py-1 fw-bold small mb-2 shadow-sm">Portal del Agente</span>
+                <h1 class="fw-bold text-dark mb-1">Mis Propiedades Registradas</h1>
+                <p class="text-secondary mb-0">Gestiona, consulta el detalle y administra todas tus propiedades publicadas.</p>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a asp-controller="MantenimientoPropiedad" asp-action="Create" class="btn btn-gradient rounded-pill px-4 py-2.5 fw-semibold shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Nueva Propiedad
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-5">
+            <div class="py-4">
+                <div class="text-muted mb-3">
+                    <i class="bi bi-houses fs-1 text-primary"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-3">No tiene propiedades registradas en este momento.</h4>
+                <p class="text-secondary mb-4 mx-auto" style="max-width: 500px;">Comience publicando su primera propiedad en el sistema para recibir consultas por chat y propuestas de compra de los clientes.</p>
+                <a asp-controller="MantenimientoPropiedad" asp-action="Create" class="btn btn-gradient rounded-pill px-5 py-2.5 fw-semibold shadow-sm">
+                    <i class="bi bi-plus-lg me-1"></i> Registrar Propiedad
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+            @foreach (var p in Model)
+            {
+                var imagenPortada = p.Imagenes?.FirstOrDefault()?.ImagenUrl;
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-hover-sm rounded-4 overflow-hidden bg-white">
+                        <!-- Card Image -->
+                        <div class="position-relative card-img-wrapper" style="height: 200px;">
+                            @if (!string.IsNullOrEmpty(imagenPortada))
+                            {
+                                <img src="@imagenPortada" class="w-100 h-100 object-fit-cover" alt="Imagen de la propiedad @p.Codigo" />
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center bg-light text-muted">
+                                    <i class="bi bi-house-door fs-1 mb-2"></i>
+                                    <span class="small">Sin Imagen</span>
+                                </div>
+                            }
+                            
+                            <!-- Badges over image -->
+                            <div class="position-absolute top-0 start-0 m-3 d-flex flex-column gap-1-5">
+                                <span class="badge bg-primary text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
+                                    @(p.TipoPropiedad?.Nombre ?? "Propiedad")
+                                </span>
+                                <span class="badge bg-success text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
+                                    @(p.TipoVenta?.Nombre ?? "Venta")
+                                </span>
+                            </div>
+
+                            <div class="position-absolute top-0 end-0 m-3">
+                                @if (p.Estado == "Disponible")
+                                {
+                                    <span class="badge bg-success text-white rounded-pill px-3 py-1 fw-bold fs-7 shadow-sm">
+                                        <i class="bi bi-check-circle me-1"></i>@p.Estado
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger text-white rounded-pill px-3 py-1 fw-bold fs-7 shadow-sm">
+                                        <i class="bi bi-tag-fill me-1"></i>@p.Estado
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted small fw-semibold">Código: @p.Codigo</span>
+                                <span class="text-primary fw-bold fs-5">RD$ @p.Precio.ToString("N2")</span>
+                            </div>
+                            
+                            <p class="card-text text-muted small text-truncate-2 mb-3">
+                                @p.Descripcion
+                            </p>
+                            
+                            <!-- Features List -->
+                            <div class="row row-cols-3 g-2 text-center border-top pt-3 mt-auto">
+                                <div class="col">
+                                    <div class="p-1 rounded bg-light">
+                                        <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Habs</div>
+                                        <div class="fw-bold text-dark">@p.CantidadHabitaciones</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-1 rounded bg-light">
+                                        <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Baños</div>
+                                        <div class="fw-bold text-dark">@p.CantidadBanos</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-1 rounded bg-light">
+                                        <div class="small text-muted fw-semibold" style="font-size: 0.75rem;">Mts²</div>
+                                        <div class="fw-bold text-dark">@p.TamanoMetros.ToString("N0")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+                            <a asp-controller="Agente" asp-action="PropiedadDetalle" asp-route-id="@p.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold shadow-sm transition">
+                                Ver Detalles y Gestión
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,97 @@
+@model RealStateApp.Application.ViewModels.Agente.AgentConversacionViewModel
+
+@{
+    ViewData["Title"] = "Chat con " + Model.NombreCliente;
+}
+
+<div class="container my-5">
+    <!-- Breadcrumb & Header -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a asp-controller="Agente" asp-action="Index" class="text-decoration-none">Home del Agente</a></li>
+                        <li class="breadcrumb-item"><a asp-controller="Agente" asp-action="PropiedadDetalle" asp-route-id="@Model.PropiedadId" class="text-decoration-none">Detalle de Propiedad</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Conversación</li>
+                    </ol>
+                </nav>
+                <h2 class="fw-bold text-dark mb-0">
+                    Conversación con: <span class="text-primary">@Model.NombreCliente</span>
+                </h2>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a asp-controller="Agente" asp-action="PropiedadDetalle" asp-route-id="@Model.PropiedadId" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold">
+                    <i class="bi bi-arrow-left me-1"></i> Volver al detalle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-warning border-0 shadow-sm p-4 rounded-4 mb-4 d-flex align-items-center">
+            <i class="bi bi-exclamation-circle-fill fs-3 text-warning me-3"></i>
+            <div class="fw-semibold text-dark">@TempData["ErrorMessage"]</div>
+        </div>
+    }
+
+    <!-- Historial de Mensajes -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+        <div class="card-header bg-white border-bottom p-4">
+            <h4 class="fw-bold mb-0 text-dark">Historial de mensajes</h4>
+        </div>
+        <div class="card-body p-4 bg-light" style="max-height: 550px; overflow-y: auto;">
+            @if (Model.Mensajes != null && Model.Mensajes.Any())
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var msj in Model.Mensajes)
+                    {
+                        var esAgente = msj.Remitente == "Agente" || msj.Remitente.Contains("Agente");
+                        <div class="d-flex flex-column @(esAgente ? "align-items-end" : "align-items-start")">
+                            <div class="p-3 rounded-4 shadow-sm @(esAgente ? "bg-primary text-white rounded-bottom-0 rounded-start-4" : "bg-white text-dark border rounded-bottom-0 rounded-end-4")" style="max-width: 75%; width: fit-content;">
+                                <div class="d-flex justify-content-between align-items-center gap-3 mb-1">
+                                    <strong class="small @(esAgente ? "text-white-50" : "text-primary")">@msj.Remitente</strong>
+                                    <span class="small @(esAgente ? "text-white-50" : "text-muted")" style="font-size: 0.75rem;">@msj.FechaEnvio.ToString("g")</span>
+                                </div>
+                                <p class="mb-0 fs-6 text-break">@msj.Contenido</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-chat-dots fs-1 mb-2 d-block text-secondary"></i>
+                    <p class="mb-0">No hay mensajes anteriores registrados.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Formulario para responder al cliente -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <h4 class="fw-bold mb-3 text-dark">Responder al cliente</h4>
+        <form asp-action="EnviarMensaje" method="post">
+            <input type="hidden" asp-for="PropiedadId" />
+            <input type="hidden" asp-for="ClienteId" />
+            
+            <div class="mb-3">
+                <label asp-for="NuevoMensaje" class="form-label text-secondary fw-semibold small">Mensaje <span class="text-danger">*</span></label>
+                <textarea asp-for="NuevoMensaje" class="form-control rounded-3 border-2 border-light p-3" rows="4" placeholder="Escriba aquí la respuesta que desea enviar al cliente..."></textarea>
+                <span asp-validation-for="NuevoMensaje" class="text-danger small fw-semibold mt-1 d-block"></span>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-gradient rounded-pill px-5 py-2.5 fw-bold shadow-sm">
+                    Enviar respuesta
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

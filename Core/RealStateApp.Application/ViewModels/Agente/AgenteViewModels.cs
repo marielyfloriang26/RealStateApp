@@ -18,6 +18,8 @@ public class AgentPropiedadDetalleViewModel
     public string Estado { get; set; } = null!;
     public List<string> Imagenes { get; set; } = new();
     public List<string> Mejoras { get; set; } = new();
+    public List<AgentClienteConversacionViewModel> ClientesConversacion { get; set; } = new();
+    public List<AgentClienteOfertasViewModel> ClientesOfertas { get; set; } = new();
 }
 
 public class AgentClienteConversacionViewModel

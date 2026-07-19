@@ -13,5 +13,5 @@ public interface IAgentePropiedadService
     
     Task<List<AgentClienteOfertasViewModel>> GetClientesConOfertasAsync(int propiedadId, int agenteId);
     Task<AgentOfertasPorClienteViewModel?> GetOfertasPorClienteAsync(int propiedadId, int clienteId, int agenteId);
-    Task<bool> ResponderOfertaAsync(int ofertaId, int agenteId, string nuevaRespuesta); // nuevaRespuesta: "Aceptada" o "Rechazada"
+    Task<(bool Success, string ErrorMessage)> ResponderOfertaAsync(int ofertaId, int agenteId, string nuevaRespuesta); // nuevaRespuesta: "Aceptada" o "Rechazada"
 }

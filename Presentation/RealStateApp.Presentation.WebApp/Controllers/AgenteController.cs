@@ -56,7 +56,7 @@ public class AgenteController : Controller
     {
         var agenteId = GetAgenteId();
         var vm = await _agentePropiedadService.GetPropiedadDetalleAsync(id, agenteId);
-        if (vm == null) return RedirectToAction("Index", "Home");
+        if (vm == null) return RedirectToAction("Index");
         return View(vm);
     }
 
@@ -87,10 +87,10 @@ public class AgenteController : Controller
             var vm = await _agentePropiedadService.GetConversacionCompletaAsync(model.PropiedadId, model.ClienteId, agenteId);
             if(vm != null) 
             {
-                vm.NuevoMensaje = model.NuevoMensaje;
+                vm.NuevoMensaje = model.NuevoMensaje ?? "";
                 return View("Conversacion", vm);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index");
         }
 
         var success = await _agentePropiedadService.EnviarMensajeAsync(model.PropiedadId, model.ClienteId, GetAgenteId(), model.NuevoMensaje);
@@ -118,7 +118,7 @@ public class AgenteController : Controller
     public async Task<IActionResult> ResponderOferta(int ofertaId, int propiedadId, int clienteId, string respuesta)
     {
         var agenteId = GetAgenteId();
-        var success = await _agentePropiedadService.ResponderOfertaAsync(ofertaId, agenteId, respuesta);
+        var (success, errorMessage) = await _agentePropiedadService.ResponderOfertaAsync(ofertaId, agenteId, respuesta);
         if (success)
         {
             if (respuesta == "Aceptada")
@@ -128,11 +128,7 @@ public class AgenteController : Controller
         }
         else
         {
-            var propiedadDetalle = await _agentePropiedadService.GetPropiedadDetalleAsync(propiedadId, agenteId);
-            if (propiedadDetalle?.Estado == "Vendida")
-                TempData["ErrorMessage"] = "No se puede aceptar una oferta para una propiedad que ya fue vendida.";
-            else
-                TempData["ErrorMessage"] = "Esta oferta ya fue respondida.";
+            TempData["ErrorMessage"] = errorMessage;
         }
 
         return RedirectToAction("OfertasPorCliente", new { propiedadId, clienteId });
