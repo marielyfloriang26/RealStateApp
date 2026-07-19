@@ -44,7 +44,19 @@ public class AccountController : Controller
         // 2. Validar estado (Solo usuarios activos)
         if (!user.EsActivo)
         {
-            ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
+            // Si el usuario es Agente, mostramos el mensaje personalizado
+            if (await _userManager.IsInRoleAsync(user, "Agente"))
+            {
+                ModelState.AddModelError("", "Su cuenta de agente aún no ha sido activada por un administrador.");
+            }
+            else if (await _userManager.IsInRoleAsync(user, "Desarrollador"))
+            {
+                ModelState.AddModelError("", "Su cuenta de desarrollador se encuentra inactiva y no tiene acceso a la API.");
+            }
+            else
+            {
+                ModelState.AddModelError("", "El usuario se encuentra inactivo y no puede iniciar sesión.");
+            }
             return View(vm);
         }
 
@@ -71,7 +83,7 @@ public class AccountController : Controller
         var role = roles.First();
         return role switch
         {     // ASIGNAR REDIRECCIONES CORRECTAS
-            "Administrador" => RedirectToAction("Index", "Home"),
+            "Administrador" => RedirectToAction("Index", "Admin"),
             "Agente" => RedirectToAction("Index","Home"),
             "Cliente" => RedirectToAction("Index", "Home"),
             _ => RedirectToAction("Index", "Home")

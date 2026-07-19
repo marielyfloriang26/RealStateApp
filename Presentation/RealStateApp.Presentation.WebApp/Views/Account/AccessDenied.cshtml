@@ -4,6 +4,21 @@
             <h2 class="text-danger">Acceso Denegado</h2>
             <p>No tienes los permisos necesarios para acceder a esta página.</p>
             <p>Contacta a un administrador.</p>
+            
+            <hr />
+            
+            @if (User.IsInRole("Administrador")) 
+            { 
+                <a asp-controller="HomeAdmin" asp-action="Index" class="btn btn-primary">Volver al Home Administrativo</a> 
+            }
+            else if (User.IsInRole("Agente")) 
+            { 
+                <a asp-controller="HomeAgente" asp-action="Index" class="btn btn-primary">Volver al Home del Agente</a> 
+            }
+            else 
+            { 
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Volver al Home Público</a> 
+            }
         </div>
     </div>
 </div>

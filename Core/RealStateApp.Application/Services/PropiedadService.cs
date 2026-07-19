@@ -2,6 +2,8 @@ using AutoMapper;
 using RealStateApp.Application.Interfaces.Repositories;
 using RealStateApp.Application.Interfaces.Services;
 using RealStateApp.Application.ViewModels.Propiedad;
+
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,10 +15,14 @@ public class PropiedadService : IPropiedadService
     private readonly IPropiedadRepository _propiedadRepository;
     private readonly IMapper _mapper;
 
+    
+    
+
     public PropiedadService(IPropiedadRepository propiedadRepository, IMapper mapper)
     {
         _propiedadRepository = propiedadRepository;
         _mapper = mapper;
+
     }
 
     public async Task<List<PropiedadViewModel>> GetAllWithIncludeAsync()
@@ -80,6 +86,7 @@ public class PropiedadService : IPropiedadService
 
         return list;
     }
+
     public async Task<List<PropiedadViewModel>> GetPropertiesByAgentIdAsync(int agentId)
 {
     var propiedades = await _propiedadRepository.GetAllWithIncludeAsync();
@@ -88,4 +95,29 @@ public class PropiedadService : IPropiedadService
 
     return _mapper.Map<List<PropiedadViewModel>>(agentePropiedades);
 }
+
+    public async Task<int> CountByStatus(string status)
+    {
+        // Asumiendo que tienes acceso a tu repositorio de propiedades
+        // Esto es un ejemplo genérico, adáptalo a tu repositorio:
+        var propiedades = await _propiedadRepository.GetAllAsync(); 
+        return propiedades.Count(p => p.Estado == status); 
+        // O si tienes el estado directamente en la entidad:
+        // return propiedades.Count(p => p.Estado == status);
+    }
+    public async Task<int> CountByAgenteId(int agenteId)
+    {
+        // Obtenemos todas las propiedades primero (o usa un método de filtro si el repositorio lo permite)
+        var propiedades = await _propiedadRepository.GetAllAsync();
+        
+        // Filtramos en memoria (o en base de datos si tu repositorio tiene métodos específicos)
+        return propiedades.Count(p => p.AgenteId == agenteId);
+    }
+
+    public async Task DeleteAllByAgenteId(int agenteId)
+    {
+        // Delegamos la lógica al repositorio, tal como definimos antes
+        await _propiedadRepository.DeleteAllRelatedToAgente(agenteId);
+    }
+
 }
