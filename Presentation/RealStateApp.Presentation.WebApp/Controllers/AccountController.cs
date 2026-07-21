@@ -90,6 +90,12 @@ public class AccountController : Controller
         };
     }
 
+    [HttpGet]
+    public IActionResult ConfirmarLogout()
+    {
+        return View();
+    }
+
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
