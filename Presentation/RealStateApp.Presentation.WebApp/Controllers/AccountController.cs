@@ -138,6 +138,7 @@ public class AccountController : Controller
             Email = vm.Email,
             Nombre = vm.Nombre,
             Apellido = vm.Apellido,
+            PhoneNumber = vm.Telefono,
             TipoUsuario = vm.TipoUsuario,
             EsActivo = false // Requerimiento: Siempre inactivo
         };

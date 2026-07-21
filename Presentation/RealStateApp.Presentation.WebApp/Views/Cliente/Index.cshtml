@@ -55,6 +55,7 @@
             </div>
             
             <form asp-action="Index" method="get">
+                <div asp-validation-summary="All" class="text-danger small mb-3"></div>
                 <div class="mb-3">
                     <label class="form-label text-secondary fw-semibold small">Tipo de Propiedad</label>
                     <select name="TipoPropiedadId" class="form-select rounded-3 border-2 border-light py-2">
@@ -179,7 +180,7 @@
 
                         <!-- Boton Ver Detalles -->
                         <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-                            <a asp-action="Details" asp-controller="Home" asp-route-id="@propiedad.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold shadow-sm transition">
+                            <a asp-action="Details" asp-controller="Cliente" asp-route-id="@propiedad.Id" class="btn btn-outline-primary w-100 rounded-pill fw-semibold shadow-sm transition">
                                 Ver Detalles
                             </a>
                         </div>
