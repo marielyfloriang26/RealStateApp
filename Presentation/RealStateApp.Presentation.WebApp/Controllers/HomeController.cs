@@ -89,9 +89,9 @@ public class HomeController : Controller
         var propiedad = await _propiedadService.GetByIdWithIncludeAsync(id);
         if (propiedad == null)
         {
-            return View("PropertyNotFound");
+            return View("PropiedadNoEncontrada");
         }
-        return View(propiedad);
+        return View("Detalles", propiedad);
     }
     public async Task<IActionResult> Agentes(string? searchName)
 {
