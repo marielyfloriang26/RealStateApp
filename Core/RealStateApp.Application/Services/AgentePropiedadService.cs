@@ -90,9 +90,9 @@ public class AgentePropiedadService : IAgentePropiedadService
             .OrderBy(m => m.FechaEnvio)
             .Select(m => new AgentMensajeViewModel
             {
-                Remitente = m.Remitente == "Agente" ? (m.Agente?.Nombre ?? "Agente") : (m.Cliente?.Nombre ?? "Cliente"),
+               Remitente = m.Remitente, //== "Agente" ? (m.Agente?.Nombre ?? "Agente") : (m.Cliente?.Nombre ?? "Cliente"),
                 Contenido = m.Contenido,
-                FechaEnvio = m.FechaEnvio
+                FechaEnvio = m.FechaEnvio 
             })
             .ToList();
 

@@ -175,7 +175,7 @@
                                             <span class="d-inline-block text-truncate" style="max-width: 260px;">@c.UltimoMensaje</span>
                                         </td>
                                         <td>
-                                            <span class="badge bg-light text-dark border px-2 py-1">@c.FechaUltimoMensaje.ToString("g")</span>
+                                            <span class="badge bg-light text-dark border px-2 py-1">@c.FechaUltimoMensaje.ToLocalTime().ToString("g")</span>
                                         </td>
                                         <td class="pe-3 text-end">
                                             <a asp-action="Conversacion" asp-route-propiedadId="@Model.Id" asp-route-clienteId="@c.ClienteId" class="btn btn-gradient rounded-pill px-3 py-1.5 btn-sm fw-semibold shadow-sm">
