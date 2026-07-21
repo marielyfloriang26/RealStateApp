@@ -23,7 +23,8 @@ public class MantenimientoPropiedadController : Controller
 
     private int GetCurrentUserId()
     {
-        var idClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+        var idClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+       // var idClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
         if (idClaim != null && int.TryParse(idClaim.Value, out int id)) return id;
         return 0; // Replace with proper extraction
     }

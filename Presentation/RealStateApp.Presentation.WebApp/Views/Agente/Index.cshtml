@@ -1,4 +1,4 @@
-@model List<RealStateApp.Domain.Entities.Propiedad>
+@model List<RealStateApp.Application.ViewModels.Propiedad.PropiedadViewModel>
 
 @{
     ViewData["Title"] = "Home del Agente";
@@ -41,7 +41,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
             @foreach (var p in Model)
             {
-                var imagenPortada = p.Imagenes?.FirstOrDefault()?.ImagenUrl;
+                var imagenPortada = p.ImagenesUrl?.FirstOrDefault();
                 <div class="col">
                     <div class="card h-100 border-0 shadow-hover-sm rounded-4 overflow-hidden bg-white">
                         <!-- Card Image -->
@@ -61,10 +61,10 @@
                             <!-- Badges over image -->
                             <div class="position-absolute top-0 start-0 m-3 d-flex flex-column gap-1-5">
                                 <span class="badge bg-primary text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
-                                    @(p.TipoPropiedad?.Nombre ?? "Propiedad")
+                                    @(p.TipoPropiedadNombre ?? "Propiedad")
                                 </span>
                                 <span class="badge bg-success text-white rounded-pill px-2.5 py-1 fw-bold fs-7 shadow-sm">
-                                    @(p.TipoVenta?.Nombre ?? "Venta")
+                                    @(p.TipoVentaNombre ?? "Venta")
                                 </span>
                             </div>
 
