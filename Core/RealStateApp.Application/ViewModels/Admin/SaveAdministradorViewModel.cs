@@ -21,7 +21,6 @@ public class SaveAdministradorViewModel
     [Required(ErrorMessage = "El campo es obligatorio.")]
     public string UserName { get; set; }
     
-    // Contraseñas (Opcional en edición, Requerido en creación)
     [Required(ErrorMessage = "El campo es obligatorio.")]
     public string? Password { get; set; }
     [Required(ErrorMessage = "El campo es obligatorio.")]

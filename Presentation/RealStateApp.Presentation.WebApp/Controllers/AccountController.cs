@@ -31,7 +31,7 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid) return View(vm);
 
-        // 1. Buscar usuario por nombre o email
+        //  Buscar usuario por nombre o email
         var user = await _userManager.FindByNameAsync(vm.EmailOrUserName) 
                    ?? await _userManager.FindByEmailAsync(vm.EmailOrUserName);
 
@@ -41,7 +41,7 @@ public class AccountController : Controller
             return View(vm);
         }
 
-        // 2. Validar estado (Solo usuarios activos)
+        // Validar estado (Solo usuarios activos)
         if (!user.EsActivo)
         {
             // Si el usuario es Agente, mostramos el mensaje personalizado
@@ -60,7 +60,7 @@ public class AccountController : Controller
             return View(vm);
         }
 
-        // 3. Validar credenciales
+        // Validar credenciales
 
         await _signInManager.SignOutAsync();
 
@@ -72,7 +72,7 @@ public class AccountController : Controller
             return View(vm);
         }
 
-        // 4. Redirección basada en roles
+        //  Redirección basada en roles
         var roles = await _userManager.GetRolesAsync(user);
         if (!roles.Any())
         {
@@ -106,7 +106,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult AccessDenied()
     {
-        return View(); // Esto buscará Views/Account/AccessDenied.cshtml
+        return View(); // Esto buscará AccessDenied
     }
 
     [HttpGet]
@@ -117,14 +117,14 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid) return View(vm);
 
-        // 1. Validar Tipo de Usuario (Seguridad)
+        // Validar Tipo de Usuario (Seguridad)
         if (vm.TipoUsuario != "Cliente" && vm.TipoUsuario != "Agente")
         {
             ModelState.AddModelError("", "Tipo de usuario no válido.");
             return View(vm);
         }
 
-        // 2. Validar Unicidad (Reglas de negocio)
+        // Validar Unicidad (Reglas de negocio)
         if (await _userManager.FindByNameAsync(vm.UserName) != null)
         {
             ModelState.AddModelError("", "Ya existe un usuario registrado con este nombre de usuario.");
@@ -137,7 +137,7 @@ public class AccountController : Controller
             return View(vm);
         }
 
-        // 3. Crear usuario
+        // Crear usuario
         var user = new Usuario
         {
             UserName = vm.UserName,
@@ -145,7 +145,7 @@ public class AccountController : Controller
             Nombre = vm.Nombre,
             Apellido = vm.Apellido,
             TipoUsuario = vm.TipoUsuario,
-            EsActivo = false // Requerimiento: Siempre inactivo
+            EsActivo = false // Siempre inactivo
         };
 
         var result = await _userManager.CreateAsync(user, vm.Password);
@@ -159,7 +159,7 @@ public class AccountController : Controller
             return View(vm);
         }
 
-        // 4. Subida de Foto
+        // Subida de Foto
         try
         {
             user.FotoUrl = _uploadService.UploadFile(vm.Foto, user.Id);
@@ -167,12 +167,12 @@ public class AccountController : Controller
         }
         catch (Exception ex)
         {
-            await _userManager.DeleteAsync(user); // Rollback
+            await _userManager.DeleteAsync(user);
             ModelState.AddModelError("", ex.Message);
             return View(vm);
         }
 
-        // 5. Asignar Rol
+        //  Asignar Rol
         await _userManager.AddToRoleAsync(user, vm.TipoUsuario);
 
         if (vm.TipoUsuario == "Cliente")
@@ -209,7 +209,7 @@ public class AccountController : Controller
         var result = await _userManager.ConfirmEmailAsync(user, token);
         if (result.Succeeded)
         {
-            // Activamos el usuario en nuestra base de datos
+            // Activa el usuario en la base de datos
             user.EmailConfirmed = true;
             user.EsActivo = true;
             await _userManager.UpdateAsync(user);

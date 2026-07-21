@@ -5,7 +5,7 @@ public static class DefaultIdentitySeed
 {
     public static async Task SeedRolesAsync(UserManager<Usuario> userManager, RoleManager<IdentityRole<int>> roleManager)
     {
-        // 1. Crear los roles
+        // Creacion de los roles
         string[] roles = { "Administrador", "Agente", "Cliente", "Desarrollador" };
         foreach (var role in roles)
         {
@@ -15,7 +15,7 @@ public static class DefaultIdentitySeed
             }
         }
 
-        // 2. Crear Usuarios (Administrador, Cliente y Agente)
+        // Crear Usuarios (Administrador, Cliente y Agente)
         var usersToSeed = new[]
         {
             new { User = "Admin", Email = "admin@realestateapp.com", Role = "Administrador", Nombre = "Administrador", Apellido = "Sistema", Pass = "Admin123!" },

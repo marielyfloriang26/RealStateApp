@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using RealStateApp.Application.Interfaces.Services;
-using SixLabors.ImageSharp; // Necesario para validar que es una imagen real
+using SixLabors.ImageSharp;
 
 namespace RealStateApp.Infrastructure.Shared.Services;
 
@@ -11,13 +11,13 @@ public class UploadService : IUploadService
         if (file == null || file.Length == 0)
             throw new Exception("Debe seleccionar un archivo de imagen válido.");
 
-        // 1. Validar extensión
+        // Validar extensión
         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
         var extension = Path.GetExtension(file.FileName).ToLower();
         if (!allowedExtensions.Contains(extension))
             throw new Exception("El archivo seleccionado no tiene un formato de imagen válido.");
 
-        // 2. NUEVA VALIDACIÓN: ¿Es realmente una imagen?
+        //  verificar si realmente es una imagen
         try
         {
             using var image = Image.Load(file.OpenReadStream());
@@ -27,11 +27,11 @@ public class UploadService : IUploadService
             throw new Exception("El archivo seleccionado está corrupto o no es una imagen válida.");
         }
 
-        // 3. Directorio
+        // Directorio
         string basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Users", id.ToString());
         if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
 
-        // 4. Nombre único y guardado
+        // Nombre único y guardado
         string fileName = Guid.NewGuid().ToString() + extension;
         string fullPath = Path.Combine(basePath, fileName);
 
