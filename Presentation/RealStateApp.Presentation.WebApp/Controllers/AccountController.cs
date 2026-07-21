@@ -84,8 +84,8 @@ public class AccountController : Controller
         return role switch
         {     // ASIGNAR REDIRECCIONES CORRECTAS
             "Administrador" => RedirectToAction("Index", "Admin"),
-            "Agente" => RedirectToAction("Index","Home"),
-            "Cliente" => RedirectToAction("Index", "Home"),
+            "Agente" => RedirectToAction("Index","Agente"),
+            "Cliente" => RedirectToAction("Index", "Cliente"),
             _ => RedirectToAction("Index", "Home")
         };
     }
