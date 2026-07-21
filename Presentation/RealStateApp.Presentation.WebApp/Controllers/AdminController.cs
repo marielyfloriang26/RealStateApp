@@ -64,9 +64,21 @@ public class AdminController : Controller
         return View(model);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> CambiarEstadoAgente(int id)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user == null)
+        {
+            TempData["Error"] = "El agente seleccionado no existe.";
+            return RedirectToAction("ListarAgentes");
+        }
+        return View(user); // Renderiza la vista de confirmación de estado
+    }
+
     // 2. Activar/Inactivar
     [HttpPost] // ESTO ES OBLIGATORIO
-    public async Task<IActionResult> CambiarEstadoAgente(int id)
+    public async Task<IActionResult> ConfirmarCambiarEstadoAgente(int id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
         if (user == null) return NotFound();
@@ -155,9 +167,29 @@ public class AdminController : Controller
         return View(model);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> CambiarEstadoAdmin(string id)
+    {
+        var adminLogueadoId = _userManager.GetUserId(User);
+        if (id == adminLogueadoId)
+        {
+            TempData["Error"] = "No puede inactivar a su propio usuario.";
+            return RedirectToAction("ListarAdministradores");
+        }
+
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            TempData["Error"] = "El administrador seleccionado no existe.";
+            return RedirectToAction("ListarAdministradores");
+        }
+
+        return View(user); // Renderiza la vista de confirmación de estado para Admin
+    }
+
 
     [HttpPost]
-    public async Task<IActionResult> CambiarEstadoAdmin(string id)
+    public async Task<IActionResult> ConfirmarCambiarEstadoAdmin(string id)
     {
         var adminLogueadoId = _userManager.GetUserId(User);
         if (id == adminLogueadoId)

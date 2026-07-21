@@ -32,12 +32,11 @@
                     <td>@(item.EsActivo ? "Activo" : "Inactivo")</td>
                     <td>
                         <a asp-action="EditarDesarrollador" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
-                        <form asp-action="CambiarEstadoDev" asp-route-id="@item.Id" method="post" class="d-inline"
-                              onsubmit="return confirm('¿Está seguro que desea @(item.EsActivo ? "inactivar" : "activar") este desarrollador?');">
-                            <button type="submit" class="btn btn-sm @(item.EsActivo ? "btn-warning" : "btn-success")">
-                                @(item.EsActivo ? "Inactivar" : "Activar")
-                            </button>
-                        </form>
+
+                        <a asp-action="CambiarEstado" asp-route-id="@item.Id" 
+                           class="btn btn-sm @(item.EsActivo ? "btn-warning" : "btn-success")">
+                            @(item.EsActivo ? "Inactivar" : "Activar")
+                        </a>
                     </td>
                 </tr>
             }
