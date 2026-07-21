@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -20,112 +20,80 @@
 
     
    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
-            <div class="container">
-                <a class="navbar-brand fw-bold text-white fs-4" asp-controller="Home" asp-action="Index">
-                    RealEstate<span class="fw-light">App</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                                <div class="collapse navbar-collapse" id="navbarContent">
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        @if (User.IsInRole("Agente"))
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-white fs-4" asp-controller="Home" asp-action="Index">
+                RealEstate<span class="fw-light">App</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <ul class="navbar-nav me-auto">
+                        @if (User.IsInRole("Administrador"))
                         {
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Agente" asp-action="Index">Home del Agente</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Agente" asp-action="Perfil">Mi Perfil</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="MantenimientoPropiedad" asp-action="Index">Mantenimiento de Propiedades</a>
-                                </li>
-                            </ul>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Administración
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Dashboard Admin</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="ListarAgentes">Listado de Agentes</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="ListarAdministradores">Mantenimiento Admin</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Desarrollador" asp-action="ListarDesarrolladores">Mantenimiento Desarrolladores</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="TipoPropiedades">Tipo de Propiedades</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="TipoVentas">Tipo de Ventas</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Mejoras">Mejoras</a></li>
+                                </ul>
+                            </li>
+                        }
+                        else if (User.IsInRole("Agente"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Agente" asp-action="Index">Home Agente</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Agente" asp-action="Perfil">Mi Perfil</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="MantenimientoPropiedad" asp-action="Index">Propiedades</a></li>
                         }
                         else if (User.IsInRole("Cliente"))
                         {
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Cliente" asp-action="Index">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Agentes">Agentes</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Cliente" asp-action="MisPropiedades">Mis Propiedades</a>
-                                </li>
-                            </ul>
-                        }
-                        else if (User.IsInRole("Administrador"))
-                        {
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Index">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Agentes">Agentes</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="TipoPropiedad" asp-action="Index">Mantenimiento de tipo de propiedades</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="TipoVenta" asp-action="Index">Mantenimiento de tipo de ventas</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Mejora" asp-action="Index">Mantenimiento de mejoras</a>
-                                </li>
-                            </ul>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Cliente" asp-action="Index">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Agentes">Agentes</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Cliente" asp-action="MisPropiedades">Mis Propiedades</a></li>
                         }
                         else
                         {
-                            <!-- Otros roles como Desarrollador -->
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Index">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-controller="Home" asp-action="Agentes">Agentes</a>
-                                </li>
-                            </ul>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Agentes">Agentes</a></li>
                         }
+                    </ul>
 
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
-                            <li class="nav-item text-white-50 me-2 small">
-                                Bienvenido, <span class="fw-bold text-white">@User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-light rounded-pill px-3 py-1.5 btn-sm">Cerrar sesión</button>
-                                </form>
-                            </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-controller="Home" asp-action="Agentes">Agentes</a>
-                            </li>
-                        </ul>
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
-                            <li class="nav-item">
-                                <a class="btn btn-outline-light rounded-pill px-3 py-1.5 btn-sm" asp-controller="Account" asp-action="Register">Únete a la app</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-gradient rounded-pill px-4 py-1.5 btn-sm" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
-                            </li>
-                        </ul>
-                    }
-                </div>
+                    <ul class="navbar-nav ms-auto align-items-center gap-2">
+                        <li class="nav-item text-white-50 me-2 small">
+                            Bienvenido, <span class="fw-bold text-white">@User.Identity.Name</span>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="btn btn-outline-light rounded-pill btn-sm">Cerrar sesión</button>
+                            </form>
+                        </li>
+                    </ul>
+                }
+                else
+                {
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto gap-2">
+                        <li class="nav-item"><a class="btn btn-outline-light rounded-pill btn-sm" asp-controller="Account" asp-action="Register">Únete a la app</a></li>
+                        <li class="nav-item"><a class="btn btn-primary rounded-pill btn-sm" asp-controller="Account" asp-action="Login">Iniciar sesión</a></li>
+                    </ul>
+                }
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
 
 

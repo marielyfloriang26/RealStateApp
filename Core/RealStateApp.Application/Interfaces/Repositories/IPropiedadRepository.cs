@@ -6,4 +6,5 @@ public interface IPropiedadRepository : IRepositoryAsync<Propiedad>
 {
     Task<IReadOnlyList<Propiedad>> GetAllWithIncludeAsync();
     Task<Propiedad?> GetByIdWithIncludeAsync(int id);
+    Task DeleteAllRelatedToAgente(int agenteId);
 }
