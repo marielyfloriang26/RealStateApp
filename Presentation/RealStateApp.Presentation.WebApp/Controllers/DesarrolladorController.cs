@@ -146,8 +146,21 @@ public class DesarrolladorController : Controller
         return RedirectToAction("ListarDesarrolladores");
     }
 
+    [HttpGet]
+    public async Task<IActionResult> CambiarEstado(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null || !await _userManager.IsInRoleAsync(user, "Desarrollador"))
+        {
+            TempData["Error"] = "El desarrollador seleccionado no existe.";
+            return RedirectToAction("ListarDesarrolladores");
+        }
+
+        return View(user); 
+    }
+
     [HttpPost]
-    public async Task<IActionResult> CambiarEstadoDev(string id)
+    public async Task<IActionResult> ConfirmarCambiarEstado(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user == null || !await _userManager.IsInRoleAsync(user, "Desarrollador")) return NotFound();

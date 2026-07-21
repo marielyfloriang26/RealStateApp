@@ -1,0 +1,31 @@
+@model RealStateApp.Domain.Entities.Usuario
+
+@{
+    ViewData["Title"] = "Cambiar Estado de Administrador";
+    var accionTexto = Model.EsActivo ? "inactivar" : "activar";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body text-center py-5">
+                    <h3 class="mb-4 text-warning">Confirmar Acción</h3>
+                    
+                    <p class="fs-5 mb-4">
+                        ¿Está seguro que desea <strong>@accionTexto</strong> este administrador (<strong>@Model.Nombre @Model.Apellido</strong>)?
+                    </p>
+
+                    <form asp-action="ConfirmarCambiarEstadoAdmin" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        <div class="d-flex justify-content-center gap-3">
+                            <a asp-action="ListarAdministradores" class="btn btn-secondary px-4">Volver atrás</a>
+                            <button type="submit" class="btn btn-primary px-4">Aceptar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
