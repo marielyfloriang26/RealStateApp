@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\Core\RealStateApp.Application\RealStateApp.Application.csproj" />
     <ProjectReference Include="..\..\Core\RealStateApp.Domain\RealStateApp.Domain.csproj" />
     <ProjectReference Include="..\..\Infrastructure\RealStateApp.Infrastructure.Persistence\RealStateApp.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\RealStateApp.Infrastructure.Shared\RealStateApp.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
 </Project>

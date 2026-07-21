@@ -6,10 +6,14 @@ using RealStateApp.Infrastructure.Persistence.Contexts;
 using RealStateApp.Domain.Entities;
 using RealStateApp.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models; // Añade esta línea
+using RealStateApp.Application;
+using RealStateApp.Infrastructure.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
+builder.Services.AddApplicationLayer();
+builder.Services.AddSharedInfrastructure(builder.Configuration);
 
 // 1. CONFIGURACIÓN DE IDENTIDAD Y BASE DE DATOS
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>()
