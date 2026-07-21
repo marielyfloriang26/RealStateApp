@@ -11,4 +11,8 @@ public interface IPropiedadService
     Task<PropiedadViewModel?> GetByCodeWithIncludeAsync(string code);
     Task<List<PropiedadViewModel>> GetAllFilteredAsync(FiltroPropiedadViewModel filter);
     Task<List<PropiedadViewModel>> GetPropertiesByAgentIdAsync(int agentId);
+
+    Task<List<PropiedadViewModel>> GetAllApiAsync();
+    Task<PropiedadViewModel?> GetByIdApiAsync(int id);
+    Task<PropiedadViewModel?> GetByCodeApiAsync(string code);
 }

@@ -88,4 +88,26 @@ public class PropiedadService : IPropiedadService
 
     return _mapper.Map<List<PropiedadViewModel>>(agentePropiedades);
 }
+
+    public async Task<List<PropiedadViewModel>> GetAllApiAsync()
+    {
+        var propiedades = await _propiedadRepository.GetAllWithIncludeAsync();
+        var ordenadas = propiedades.OrderByDescending(p => p.FechaCreacion).ToList();
+        return _mapper.Map<List<PropiedadViewModel>>(ordenadas);
+    }
+
+    public async Task<PropiedadViewModel?> GetByIdApiAsync(int id)
+    {
+        var propiedad = await _propiedadRepository.GetByIdWithIncludeAsync(id);
+        if (propiedad == null) return null;
+        return _mapper.Map<PropiedadViewModel>(propiedad);
+    }
+
+    public async Task<PropiedadViewModel?> GetByCodeApiAsync(string code)
+    {
+        var propiedades = await _propiedadRepository.GetAllWithIncludeAsync();
+        var propiedad = propiedades.FirstOrDefault(p => p.Codigo == code);
+        if (propiedad == null) return null;
+        return _mapper.Map<PropiedadViewModel>(propiedad);
+    }
 }

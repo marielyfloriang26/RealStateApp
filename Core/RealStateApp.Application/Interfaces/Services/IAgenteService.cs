@@ -10,4 +10,8 @@ public interface IAgenteService
     Task<List<AgenteViewModel>> SearchByNameAsync(string name);
     Task<AgenteViewModel?> GetByIdAsync(int id);
     Task UpdateProfileAsync(int agentId, MiPerfilViewModel vm);
+
+    Task<List<AgenteViewModel>> GetAllApiAsync();
+    Task<AgenteViewModel?> GetByIdApiAsync(int id);
+    Task ChangeStatusAsync(int agentId, bool status);
 }

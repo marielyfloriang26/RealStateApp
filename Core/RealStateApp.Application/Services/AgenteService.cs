@@ -73,4 +73,36 @@ public class AgenteService : IAgenteService
             await _userManager.UpdateAsync(usuario);
         }
     }
+
+        public async Task<List<AgenteViewModel>> GetAllApiAsync()
+    {
+        var usuarios = await _userManager.Users
+            .Include(u => u.Propiedades)
+            .Where(u => u.TipoUsuario == "Agente")
+            .ToListAsync();
+
+        var agentes = _mapper.Map<List<AgenteViewModel>>(usuarios);
+        return agentes.OrderBy(a => a.Nombre).ToList();
+    }
+
+    public async Task<AgenteViewModel?> GetByIdApiAsync(int id)
+    {
+        var usuario = await _userManager.Users
+            .Include(u => u.Propiedades)
+            .FirstOrDefaultAsync(u => u.Id == id && u.TipoUsuario == "Agente");
+
+        if (usuario == null) return null;
+
+        return _mapper.Map<AgenteViewModel>(usuario);
+    }
+
+    public async Task ChangeStatusAsync(int agentId, bool status)
+    {
+        var usuario = await _userManager.FindByIdAsync(agentId.ToString());
+        if (usuario != null && usuario.TipoUsuario == "Agente")
+        {
+            usuario.EsActivo = status;
+            await _userManager.UpdateAsync(usuario);
+        }
+    }
 }
