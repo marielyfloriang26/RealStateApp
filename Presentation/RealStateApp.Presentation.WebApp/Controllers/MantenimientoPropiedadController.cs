@@ -73,6 +73,38 @@ public class MantenimientoPropiedadController : Controller
             return View(vm);
         }
 
+        // Validaciones de existencia en el sistema
+        var tiposPropiedad = await _mantenimientoPropiedadService.GetTiposPropiedad();
+        if (!tiposPropiedad.Any(t => t.Id == vm.TipoPropiedadId))
+        {
+            ModelState.AddModelError("TipoPropiedadId", "El tipo de propiedad seleccionado no existe en el sistema.");
+        }
+
+        var tiposVenta = await _mantenimientoPropiedadService.GetTiposVenta();
+        if (!tiposVenta.Any(t => t.Id == vm.TipoVentaId))
+        {
+            ModelState.AddModelError("TipoVentaId", "El tipo de venta seleccionado no existe en el sistema.");
+        }
+
+        var mejoras = await _mantenimientoPropiedadService.GetMejoras();
+        if (vm.MejorasIds != null && vm.MejorasIds.Any())
+        {
+            foreach (var mejoraId in vm.MejorasIds)
+            {
+                if (!mejoras.Any(m => m.Id == mejoraId))
+                {
+                    ModelState.AddModelError("MejorasIds", "Una o más mejoras seleccionadas no existen en el sistema.");
+                    break;
+                }
+            }
+        }
+
+        if (!ModelState.IsValid)
+        {
+            await LoadViewBags(vm);
+            return View(vm);
+        }
+
         if (vm.ImagenesFiles == null || !vm.ImagenesFiles.Any())
         {
             ModelState.AddModelError("", "Debe cargar al menos una imagen de la propiedad.");
@@ -125,6 +157,38 @@ public class MantenimientoPropiedadController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(SavePropiedadViewModel vm)
     {
+        if (!ModelState.IsValid)
+        {
+            await LoadViewBags(vm);
+            return View(vm);
+        }
+
+        // Validaciones de existencia en el sistema
+        var tiposPropiedad = await _mantenimientoPropiedadService.GetTiposPropiedad();
+        if (!tiposPropiedad.Any(t => t.Id == vm.TipoPropiedadId))
+        {
+            ModelState.AddModelError("TipoPropiedadId", "El tipo de propiedad seleccionado no existe en el sistema.");
+        }
+
+        var tiposVenta = await _mantenimientoPropiedadService.GetTiposVenta();
+        if (!tiposVenta.Any(t => t.Id == vm.TipoVentaId))
+        {
+            ModelState.AddModelError("TipoVentaId", "El tipo de venta seleccionado no existe en el sistema.");
+        }
+
+        var mejoras = await _mantenimientoPropiedadService.GetMejoras();
+        if (vm.MejorasIds != null && vm.MejorasIds.Any())
+        {
+            foreach (var mejoraId in vm.MejorasIds)
+            {
+                if (!mejoras.Any(m => m.Id == mejoraId))
+                {
+                    ModelState.AddModelError("MejorasIds", "Una o más mejoras seleccionadas no existen en el sistema.");
+                    break;
+                }
+            }
+        }
+
         if (!ModelState.IsValid)
         {
             await LoadViewBags(vm);

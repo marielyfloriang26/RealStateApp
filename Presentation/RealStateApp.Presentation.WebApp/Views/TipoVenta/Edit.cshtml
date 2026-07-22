@@ -19,7 +19,10 @@
                         
                         <input type="hidden" asp-for="Id" />
 
-                        @Html.ValidationSummary(false, "", new { @class = "text-danger mb-3 p-3 bg-danger-subtle rounded-3 small" })
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger mb-3 p-3 bg-danger-subtle rounded-3 small" })
+                        }
 
                         <div class="mb-3">
                             <label asp-for="Nombre" class="form-label text-secondary fw-semibold small">Nombre del tipo de venta <span class="text-danger">*</span></label>

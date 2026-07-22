@@ -45,6 +45,20 @@ public class RepositoryAsync<T> : IRepositoryAsync<T> where T : class
 
     public async Task UpdateAsync(T entity)
     {
+        var entry = _dbContext.Entry(entity);
+        var primaryKey = entry.Metadata.FindPrimaryKey();
+        if (primaryKey != null)
+        {
+            var keyValues = primaryKey.Properties.Select(p => entry.Property(p.Name).CurrentValue).ToArray();
+            var localEntity = _dbContext.Set<T>().Local.FirstOrDefault(e => 
+                primaryKey.Properties.Select(p => _dbContext.Entry(e).Property(p.Name).CurrentValue)
+                    .SequenceEqual(keyValues));
+            if (localEntity != null)
+            {
+                _dbContext.Entry(localEntity).State = EntityState.Detached;
+            }
+        }
+
         _dbContext.Entry(entity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
     }
