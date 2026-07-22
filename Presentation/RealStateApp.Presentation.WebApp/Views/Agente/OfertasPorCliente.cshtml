@@ -63,7 +63,7 @@
                         {
                             <tr>
                                 <td class="ps-3 text-dark fw-medium">
-                                    <i class="bi bi-calendar-event text-secondary me-2"></i>@oferta.FechaOferta.ToString("g")
+                                    <i class="bi bi-calendar-event text-secondary me-2"></i>@oferta.FechaOferta.ToLocalTime().ToString("g")
                                 </td>
                                 <td class="fw-bold text-primary fs-5">
                                     RD$ @oferta.MontoOfertado.ToString("N2")

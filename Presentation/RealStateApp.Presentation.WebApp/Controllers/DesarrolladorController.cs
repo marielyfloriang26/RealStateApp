@@ -32,14 +32,14 @@ public class DesarrolladorController : Controller
     [HttpPost]
     public async Task<IActionResult> CrearDesarrollador(SaveDesarrolladorViewModel model)
     {
-        // 1. Validaciones de requeridos (el modelo tiene [Required])
+        // Validaciones de requeridos 
         if (!ModelState.IsValid) 
         {
             ModelState.AddModelError("", "Debe completar todos los campos requeridos.");
             return View(model);
         }
 
-        // 2. Validaciones adicionales de negocio
+        // Validaciones adicionales de negocio
         if (_userManager.Users.Any(u => u.Cedula == model.Cedula))
             ModelState.AddModelError("Cedula", "Ya existe un usuario registrado con esta cédula.");
         
@@ -54,7 +54,7 @@ public class DesarrolladorController : Controller
 
         if (!ModelState.IsValid) return View(model);
 
-        // 3. Creación del usuario
+        // Creación del usuario
         var user = new Usuario 
         { 
             UserName = model.UserName, 
@@ -62,7 +62,7 @@ public class DesarrolladorController : Controller
             Nombre = model.Nombre, 
             Apellido = model.Apellido, 
             Cedula = model.Cedula,
-            EsActivo = true, // Requerimiento: Activo por defecto
+            EsActivo = true, // Activo por defecto
             TipoUsuario = "Desarrollador" 
         };
 
@@ -75,7 +75,7 @@ public class DesarrolladorController : Controller
             return RedirectToAction("ListarDesarrolladores");
         }
 
-        // 4. Manejo de errores de Identity
+        // Manejo de errores
         foreach (var error in result.Errors)
         {
             ModelState.AddModelError("", error.Description);

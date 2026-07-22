@@ -74,9 +74,7 @@
                             Bienvenido, <span class="fw-bold text-white">@User.Identity.Name</span>
                         </li>
                         <li class="nav-item">
-                            <form asp-controller="Account" asp-action="Logout" method="post">
-                                <button type="submit" class="btn btn-outline-light rounded-pill btn-sm">Cerrar sesión</button>
-                            </form>
+                            <a class="btn btn-outline-light rounded-pill btn-sm" asp-controller="Account" asp-action="ConfirmarLogout">Cerrar sesión</a>
                         </li>
                     </ul>
                 }

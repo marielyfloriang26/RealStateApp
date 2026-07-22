@@ -13,7 +13,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers;
 public class AdminController : Controller
 {
     private readonly UserManager<Usuario> _userManager;
-    private readonly IPropiedadService _propiedadService; // Asegúrate de tener este servicio
+    private readonly IPropiedadService _propiedadService;
 
     public AdminController(UserManager<Usuario> userManager, IPropiedadService propertyService)
     {
@@ -36,7 +36,7 @@ public class AdminController : Controller
             DesarrolladoresActivos = users.Count(u => u.TipoUsuario == "Desarrollador" && u.EsActivo),
             DesarrolladoresInactivos = users.Count(u => u.TipoUsuario == "Desarrollador" && !u.EsActivo),
             
-            // Indicadores de Propiedades (Asumiendo que tienes un servicio de propiedades)
+            // Indicadores de Propiedades
             PropiedadesDisponibles = await _propiedadService.CountByStatus("Disponible"),
             PropiedadesVendidas = await _propiedadService.CountByStatus("Vendida")
         };
@@ -73,11 +73,11 @@ public class AdminController : Controller
             TempData["Error"] = "El agente seleccionado no existe.";
             return RedirectToAction("ListarAgentes");
         }
-        return View(user); // Renderiza la vista de confirmación de estado
+        return View(user); 
     }
 
-    // 2. Activar/Inactivar
-    [HttpPost] // ESTO ES OBLIGATORIO
+    // Activar/Inactivar
+    [HttpPost]
     public async Task<IActionResult> ConfirmarCambiarEstadoAgente(int id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
@@ -91,7 +91,7 @@ public class AdminController : Controller
         return RedirectToAction("ListarAgentes");
     }
 
-    // 3. Eliminar (GET para vista de confirmación)
+    // Eliminar
     [HttpGet]
     public async Task<IActionResult> EliminarAgente(int id)
     {
@@ -101,11 +101,11 @@ public class AdminController : Controller
             TempData["Error"] = "El agente seleccionado no existe.";
             return RedirectToAction("ListarAgentes");
         }
-        return View(user); // Renderiza la vista que acabamos de crear
+        return View(user); 
     }
 
-    // 4. Eliminar (POST para ejecutar)
-    [HttpPost] // DEBE tener este atributo
+    //Eliminar 
+    [HttpPost]
     public async Task<IActionResult> ConfirmarEliminarAgente(int id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
@@ -120,9 +120,9 @@ public class AdminController : Controller
 
 
 
-    // =================================
+
+
     // MANTENIMIENTO DE ADMINISTRADORES
-    // =================================
 
     public IActionResult CrearAdministrador()
     {
@@ -137,7 +137,7 @@ public class AdminController : Controller
 
         if (!ModelState.IsValid) return View(model);
 
-        // Crear el objeto usuario de Identity
+        // Crear el objeto usuario 
         var user = new Usuario 
         { 
             UserName = model.UserName, 
@@ -158,7 +158,7 @@ public class AdminController : Controller
             return RedirectToAction("ListarAdministradores");
         }
 
-        // Si hubo errores (ej: usuario duplicado, contraseña débil)
+        // Si hubo errores (usuario duplicado, contraseña débil)
         foreach (var error in result.Errors)
         {
             ModelState.AddModelError("", error.Description);
@@ -184,7 +184,7 @@ public class AdminController : Controller
             return RedirectToAction("ListarAdministradores");
         }
 
-        return View(user); // Renderiza la vista de confirmación de estado para Admin
+        return View(user); 
     }
 
 
@@ -200,7 +200,7 @@ public class AdminController : Controller
 
         var user = await _userManager.FindByIdAsync(id);
         
-        // Validación: No dejar el sistema sin administradores activos
+        // No dejar el sistema sin administradores activos
         var administradoresActivos = (await _userManager.GetUsersInRoleAsync("Administrador"))
                                       .Count(a => a.EsActivo);
 
@@ -239,7 +239,7 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> EditarAdministrador(EditarAdministradorViewModel model)
     {
-        // 1. Validar que no edite su propio usuario
+        // Validar que no edite su propio usuario
         var adminLogueadoId = _userManager.GetUserId(User);
         if (model.Id == adminLogueadoId)
         {
@@ -252,8 +252,8 @@ public class AdminController : Controller
         var user = await _userManager.FindByIdAsync(model.Id);
         if (user == null) return NotFound();
 
-        // 2. Validaciones de datos únicos (cédula, correo, username)
-        // Excluyendo al usuario actual del chequeo para no dar error de duplicado consigo mismo
+        // Validaciones de datos únicos (cédula, correo, username)
+        // Excluyendo al usuario actual del chequeo para no dar error de duplicado
         if (_userManager.Users.Any(u => u.Cedula == model.Cedula && u.Id.ToString() != model.Id.ToString()))
             ModelState.AddModelError("Cedula", "Ya existe un usuario registrado con esta cédula.");
         
@@ -262,14 +262,14 @@ public class AdminController : Controller
 
         if (!ModelState.IsValid) return View(model);
 
-        // 3. Actualizar datos básicos
+        // Actualizar datos básicos
         user.Nombre = model.Nombre;
         user.Apellido = model.Apellido;
         user.Cedula = model.Cedula;
         user.Email = model.Email;
         user.UserName = model.UserName;
 
-        // 4. Lógica de nueva contraseña (opcional)
+        // Lógica de nueva contraseña (opcional)
         if (!string.IsNullOrEmpty(model.Password))
         {
             if (model.Password != model.ConfirmPassword)

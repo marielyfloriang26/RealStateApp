@@ -80,14 +80,14 @@ public class AgenteController : Controller
     [HttpPost]
     public async Task<IActionResult> EnviarMensaje(AgentConversacionViewModel model)
     {
-        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(model.NuevoMensaje))
+        if (string.IsNullOrWhiteSpace(model.NuevoMensaje))
         {
             ModelState.AddModelError("NuevoMensaje", "Debe escribir un mensaje antes de enviarlo.");
             var agenteId = GetAgenteId();
             var vm = await _agentePropiedadService.GetConversacionCompletaAsync(model.PropiedadId, model.ClienteId, agenteId);
             if(vm != null) 
             {
-                vm.NuevoMensaje = model.NuevoMensaje ?? "";
+                vm.NuevoMensaje = "";
                 return View("Conversacion", vm);
             }
             return RedirectToAction("Index");
@@ -171,8 +171,17 @@ public async Task<IActionResult> Perfil(MiPerfilViewModel vm)
             return View(vm);
         }
 
+        try
+        {
         // Sube la imagen y guarda la nueva URL
         vm.FotoUrl = _uploadService.UploadFile(vm.FotoFile, agentId);
+        }
+        catch (Exception ex)
+        {
+            // Captura el error o formato del servicio sin tumbar la app
+            ModelState.AddModelError("FotoFile", ex.Message);
+            return View(vm);  
+        }
     }
 
     await _agenteService.UpdateProfileAsync(agentId, vm);

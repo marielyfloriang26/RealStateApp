@@ -41,7 +41,7 @@
                     <td>
                         <a asp-action="EditarAdministrador" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
                         
-                        <!-- Formulario para Activar/Inactivar -->
+                        <!-- Activar/Inactivar -->
                         <a asp-action="CambiarEstadoAdmin" asp-route-id="@item.Id" 
                            class="btn btn-sm @(item.EsActivo ? "btn-warning" : "btn-success")">
                             @(item.EsActivo ? "Inactivar" : "Activar")
